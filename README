@@ -1,0 +1,10 @@
+--- Computing --- 
+
+CRIOS repository for computing resources. 
+
+  - job-prep: Useful bash scripts for compiling the MITgcm and preparing jobs
+
+  - optfiles: Compiler optimization files for MITgcm on various architectures
+
+
+
