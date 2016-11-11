@@ -1,0 +1,24 @@
+## Batch script for submitting jobs on the engaging cluster
+
+#!/bin/bash
+
+#SBATCH -J my_job 
+#SBATCH -o my_job.%j.out
+#SBATCH -e my_job.%j.err
+#SBATCH -N 6
+#SBATCH -n 96
+#SBATCH -p sched_mit_hill
+#SBATCH -t 12:00:00
+
+## Enter email address for begin/end notifications
+#SBATCH --mail-user=
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+
+
+. /etc/profile.d/modules.sh
+module add gcc
+module add netcdf/gcc
+module add mvapich2/gcc
+
+mpiexec -np 96 ./mitgcmuv

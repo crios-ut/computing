@@ -1,0 +1,22 @@
+## Batch script for submitting jobs on TACC machines
+## Note: Node & core counts vary between Stampede & Lonestar
+## Lonestar 5 uses Haswell: 24 cores/node
+## Stampede uses Ivy Bridge: 16 cores/node
+
+
+#!/bin/bash
+
+#SBATCH -J my_job
+#SBATCH -o my_job.%j.out
+#SBATCH -e my_job.%j.err
+#SBATCH -N 4
+#SBATCH -n 96
+#SBATCH -p normal
+#SBATCH -t 15:00:00
+
+## Enter email address here for begin/end notifications
+#SBATCH --mail-user=
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+
+ibrun tacc_affinity ./mitgcmuv_ad

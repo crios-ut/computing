@@ -1,0 +1,19 @@
+## Batch script for submitting jobs on Pleiades
+## Note: this calls for 8 haswell nodes (24 cores/node) use with 
+##	 optfile=../optfiles/linux_amd64_ifort+mpi_ice_nas_haswell
+
+#PBS -S /bin/bash
+#PBS -N my_job
+#PBS -l select=8:ncpus=24:model=has
+#PBS -l walltime=04:00:00
+#PBS -q normal
+#PBS -m be
+
+## Enter email address here for begin/end notifications
+#PBS -M 
+
+module load comp-intel
+module load mpi-sgi/mpt
+module load netcdf/4.1.2
+
+mpiexec /u/scicon/tools/bin/gm.x ./mitgcmuv
