@@ -2,9 +2,9 @@
 
 CRIOS repository for computing resources. 
 
+  - env: Bashrc files for properly loading modules and setting environment variables
+
   - job-prep: Bash scripts for submitting jobs on various architectures
 
   - optfiles: Compiler optimization files for MITgcm on various architectures
-
-
 
