@@ -1,0 +1,29 @@
+#!/bin/bash
+
+### Load modules ### 
+#default: module load intel/16.0.1
+#default: module load cray-mpich/7.3.0 
+module load TACC
+module load netcdf	
+module load parallel-netcdf
+
+### Add staf to path ### 
+PATH=$PATH:$HOME/local/bin
+LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/local/lib
+
+### CVS Stuff ###
+export CVSROOT=':pserver:cvsanon@mitgcm.org:/u/gcmpack'
+export CVSEDITOR=vim
+
+### MITgcm stuff ###
+export MPI_INC_DIR=$MPICH_DIR/include
+export NETCDF_BIN=$TACC_NETCDF_BIN
+export NETCDF_ROOT=$TACC_NETCDF_DIR
+export NETCDF_INC=$TACC_NETCDF_INC
+export NETCDF_LIB=$TACC_NETCDF_LIB
+
+## Misc terminal ##
+
+## These aren't necessary but are nice
+#  export PS1='[lonestar \W]\$ '
+#  alias ll='ls -al'
