@@ -7,7 +7,7 @@ module load TACC
 module load netcdf	
 module load parallel-netcdf
 
-### Add staf to path ### 
+### Add local binaries/libraries to path ### 
 PATH=$PATH:$HOME/local/bin
 LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$HOME/local/lib
 
