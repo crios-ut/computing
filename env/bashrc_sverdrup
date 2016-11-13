@@ -1,0 +1,24 @@
+#!/bin/bash 
+
+## Modify the path
+export PATH=$PATH:~/local/bin
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/local/lib
+
+### For MITgcm ###
+export CVSROOT=':pserver:cvsanon@mitgcm.org:/u/gcmpack'
+export CVSEDITOR=vim
+
+### Modules ###
+module load c7
+module load intel/17.0 	
+module load openmpi
+#module load matlab/r2016b
+
+## MITgcm environment variables
+export MPI_INC_DIR=$MPI_DIR/include
+
+### Terminal Stuff ###
+
+# Not necessary but nice
+#  alias ll='ls -al'
+#  export PS1='[\h \W]\$ '
