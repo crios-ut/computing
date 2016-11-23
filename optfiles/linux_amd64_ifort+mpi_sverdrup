@@ -1,20 +1,20 @@
 #!/bin/bash
 #
-#  
 # For running on the ICES cluster Sverdrup
 #  Compiler optimizations for Intel E5-2695 v3 (Haswell) Processors
 #  Note: only difference from lonestar opt file is the netcdf module load
 #
 # Note: be sure to load the following modules
 #
+#  module load c7
 #  module load intel/17.0
-#  module load mpich2
+#  module load openmpi
 #
 #-------
 
 CC=icc
 FC=ifort
-F90C=mpif90
+F90C=mpifort
 LINK="$F90C -no-ipo"
 
 DEFINES='-DALLOW_USE_MPI -DALWAYS_USE_MPI -DWORDLENGTH=4'
@@ -49,9 +49,12 @@ fi
 F90FLAGS=$FFLAGS
 F90OPTIM=$FOPTIM
 CFLAGS='-O0 -ip -fPIC'
-
-INCLUDEDIRS="${MPI_DIR}/include"
-INCLUDES="-I${MPI_DIR}/include"
-LIBS="-L${MPI_DIR}/lib -lmpich"
+INCLUDEDIRS=/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/include 
+INCLUDES=-I/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/lib
+# INCLUDEDIRS=$(shell $F90C --showme:compile)
+LIBS="-I/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/lib -Wl,-rpath -Wl,/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/lib -Wl,--enable-new-dtags -L/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi"
+#INCLUDEDIRS="${MPI_DIR}/include"
+#INCLUDES="-I${MPI_DIR}/include"
+#LIBS="-L${MPI_DIR}/lib -lmpi"
 #- used for parallel (MPI) DIVA
-MPIINCLUDEDIR="${MPI_DIR}"
+#MPIINCLUDEDIR="${MPI_DIR}"
