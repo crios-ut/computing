@@ -1,0 +1,19 @@
+## Batch script for submitting jobs on Sverdrup
+## Max 28 cores/node 
+
+#!/bin/bash
+
+#SBATCH -J my_job
+#SBATCH -o my_job.%j.out
+#SBATCH -e my_job.%j.err
+#SBATCH -N 4
+#SBATCH -n 96
+#SBATCH -p sverdrup
+#SBATCH -t 48:00:00
+
+## Enter email address here for begin/end notifications
+#SBATCH --mail-user=
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+
+mpiexec -np 96 ./mitgcmuv
