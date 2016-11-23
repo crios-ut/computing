@@ -51,10 +51,6 @@ F90OPTIM=$FOPTIM
 CFLAGS='-O0 -ip -fPIC'
 INCLUDEDIRS=/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/include 
 INCLUDES=-I/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/lib
-# INCLUDEDIRS=$(shell $F90C --showme:compile)
 LIBS="-I/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/lib -Wl,-rpath -Wl,/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/lib -Wl,--enable-new-dtags -L/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi"
-#INCLUDEDIRS="${MPI_DIR}/include"
-#INCLUDES="-I${MPI_DIR}/include"
-#LIBS="-L${MPI_DIR}/lib -lmpi"
 #- used for parallel (MPI) DIVA
 #MPIINCLUDEDIR="${MPI_DIR}"
