@@ -4,21 +4,36 @@
 export PATH=$PATH:~/local/bin
 export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:~/local/lib
 
+### Terminal Stuff ###
+export SCRATCH=/scratch/tsmith
+export contrib=/home/tsmith/gcm-contrib
+alias cdc='cd $contrib'
+alias cdh='cd $HOME'
+alias cds='cd $SCRATCH'
+alias la='ls -a'
+alias ll='ls -al'
+export PS1='[\h \W]\$ '
+alias lpq3='lpq -P cp3se'
+
+### SCP Ports ###
+alias scpthorne='scp -P 8704'
+
 ### For MITgcm ###
 export CVSROOT=':pserver:cvsanon@mitgcm.org:/u/gcmpack'
 export CVSEDITOR=vim
+# export NETCDF_ROOT=/usr/local/Cellar/netcdf/4.3.3.1
 
 ### Modules ###
-module load c7
-module load intel/17.0 	
-module load openmpi
-#module load matlab/r2016b
+#module use /share/modulefiles/intel -> no longer necessary
+#module load c7 intel/17.0 17.0/openmpi/1.10.2-hfi -> compiler errors
+module load c7 intel/17.0 openmpi/2.0.1 
+## module load c7
+## module load intel/17.0 	
+## module load openmpi
+## #module load matlab/r2016b
 
 ## MITgcm environment variables
 export MPI_INC_DIR=$MPI_DIR/include
 
-### Terminal Stuff ###
-
-# Not necessary but nice
-#  alias ll='ls -al'
-#  export PS1='[\h \W]\$ '
+## Data directory
+export ph_data='/scratch/heimbach/data'
