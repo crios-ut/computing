@@ -49,8 +49,11 @@ fi
 F90FLAGS=$FFLAGS
 F90OPTIM=$FOPTIM
 CFLAGS='-O0 -ip -fPIC'
-INCLUDEDIRS=/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/include 
-INCLUDES=-I/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/lib
-LIBS="-I/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/lib -Wl,-rpath -Wl,/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/lib -Wl,--enable-new-dtags -L/opt/apps/ossw/libraries/openmpi/openmpi-1.10.4/c7/intel-17.0/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi"
+# INCLUDEDIRS=$(shell $F90C --showme:compile)
+#LIBS=$(shell $F90C --showme:link)
+INCLUDEDIRS=/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/include 
+INCLUDES=-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib
+LIBS="-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,-rpath -Wl,/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,--enable-new-dtags -L/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi"
+
 #- used for parallel (MPI) DIVA
 #MPIINCLUDEDIR="${MPI_DIR}"
