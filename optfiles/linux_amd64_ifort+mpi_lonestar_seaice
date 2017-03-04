@@ -1,0 +1,74 @@
+#!/bin/bash
+#
+#  $Header: /u/gcmpack/MITgcm/tools/build_options/linux_amd64_ifort,v 1.10 2013/07/22 18:40:45 jmc Exp $
+#  $Name:  $
+#  
+# For running on TACC's Lonestar 5 
+#  Compiler optimizations for Intel E5-2690 (Haswell) Processors
+#
+# Note: be sure to load the following modules
+#
+#  module load netcdf
+#  module load parallel-netcdf
+#  
+#  (default) module load intel
+#  (default) module load 
+#
+#
+#
+# a) For more speed, provided your data size doesn't exceed 2GB you can
+# remove -fPIC which carries a performance penalty of 2-6%.
+# b) Provided that the libraries you link to are compiled with -fPIC this
+# optfile should work.
+# c) You can replace -fPIC with -mcmodel=medium which may perform faster
+# than -fPIC and still support data sizes over 2GB per process but all
+# the libraries you link to must be compiled with -fPIC or -mcmodel=medium
+#
+#-------
+# run with OpenMP: needs to set environment var. OMP_NUM_THREADS
+#    and generally, needs to increase the stack-size:
+#   -  sh,bash:
+#     > export OMP_NUM_THREADS=2
+#     > export KMP_STACKSIZE=400m
+#   - csh,tcsh:
+#     > setenv OMP_NUM_THREADS 2
+#     > setenv KMP_STACKSIZE 400m
+#  NOTE: with MPI+OpenMP, need to set KMP_STACKSIZE in ~/.tcshrc (but curiously,
+#        works without OMP_NUM_THREADS in ~/.tcshrc).
+#-------
+
+CC=icc
+FC=ifort
+F90C=ifort
+LINK="$F90C -no-ipo"
+
+DEFINES='-DALLOW_USE_MPI -DALWAYS_USE_MPI -DWORDLENGTH=4'
+CPP='cpp -traditional -P'
+F90FIXEDFORMAT='-fixed -Tf'
+EXTENDED_SRC_FLAG='-132'
+GET_FC_VERSION="--version"
+OMPFLAG='-openmp'
+
+#NOOPTFLAGS='-O0 -g'
+#should use NOOPTIFILES below, 3.mar.2017
+NOOPTFILES='01 -fp-model precise'
+
+FFLAGS="$FFLAGS -W0 -WB -convert big_endian -assume byterecl"
+FFLAGS="$FFLAGS -fPIC -mcmodel=large -shared-intel"
+#- might want to use '-r8' for fizhi pkg:
+#FFLAGS="$FFLAGS -r8"
+
+#should be this FFLAGS and FOPTIM below atn 3.mar.2017
+    FFLAGS="$FFLAGS -warn all -warn nounused"
+    FOPTIM="-fpe0 -fpstkchk -fpmodel except -check all -ftrapuv"
+    FOPTIM="-O0 -noalign -g -traceback"
+
+F90FLAGS=$FFLAGS
+F90OPTIM=$FOPTIM
+CFLAGS='-O0 -ip -fPIC'
+
+INCLUDEDIRS="${MPICH_DIR}/include ${TACC_NETCDF_INC}"
+INCLUDES="-I${MPICH_DIR}/include -I${TACC_NETCDF_INC}"
+LIBS="-L${MPICH_DIR}/lib -lmpich -L${TACC_NETCDF_LIB} -lnetcdf -lnetcdff"
+#- used for parallel (MPI) DIVA
+MPIINCLUDEDIR="${MPICH_DIR}"
