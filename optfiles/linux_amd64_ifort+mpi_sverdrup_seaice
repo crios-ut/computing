@@ -1,0 +1,50 @@
+#!/bin/bash
+#
+# For running on the ICES cluster Sverdrup
+#  Compiler optimizations for Intel E5-2695 v3 (Haswell) Processors
+#  Note: only difference from lonestar opt file is the netcdf module load
+#
+# Note: be sure to load the following modules
+#
+#  module load c7
+#  module load intel/17.0
+#  module load openmpi
+#
+#-------
+
+CC=icc
+FC=ifort
+F90C=mpifort
+LINK="$F90C -no-ipo"
+
+DEFINES='-DALLOW_USE_MPI -DALWAYS_USE_MPI -DWORDLENGTH=4'
+CPP='cpp -traditional -P'
+F90FIXEDFORMAT='-fixed -Tf'
+EXTENDED_SRC_FLAG='-132'
+GET_FC_VERSION="--version"
+OMPFLAG='-openmp'
+
+#NOOPTFLAGS='-O0 -g'
+NOOPTFILES='01 -fp-model precise'
+
+FFLAGS="$FFLAGS -W0 -WB -convert big_endian -assume byterecl"
+FFLAGS="$FFLAGS -fPIC"
+FFLAGS="$FFLAGS -mcmodel=large -shared-intel"
+#- might want to use '-r8' for fizhi pkg:
+#FFLAGS="$FFLAGS -r8"
+
+    FFLAGS="$FFLAGS -warn all -warn nounused"
+#    FOPTIM="-fpe0 -fpstkchk -fpmodel except -check all -ftrapuv"
+    FOPTIM="-O0 -noalign -g -traceback"
+
+F90FLAGS=$FFLAGS
+F90OPTIM=$FOPTIM
+CFLAGS='-O0 -ip -fPIC'
+# INCLUDEDIRS=$(shell $F90C --showme:compile)
+#LIBS=$(shell $F90C --showme:link)
+INCLUDEDIRS=/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/include 
+INCLUDES=-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib
+LIBS="-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,-rpath -Wl,/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,--enable-new-dtags -L/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi"
+
+#- used for parallel (MPI) DIVA
+#MPIINCLUDEDIR="${MPI_DIR}"
