@@ -49,9 +49,8 @@ EXTENDED_SRC_FLAG='-132'
 GET_FC_VERSION="--version"
 OMPFLAG='-openmp'
 
-#NOOPTFLAGS='-O0 -g'
 #should use NOOPTIFILES below, 3.mar.2017
-NOOPTFILES='01 -fp-model precise'
+NOOPTFLAGS='-O1 -g -xCORE-AVX2'
 
 FFLAGS="$FFLAGS -W0 -WB -convert big_endian -assume byterecl"
 FFLAGS="$FFLAGS -fPIC -mcmodel=large -shared-intel"
@@ -59,9 +58,10 @@ FFLAGS="$FFLAGS -fPIC -mcmodel=large -shared-intel"
 #FFLAGS="$FFLAGS -r8"
 
 #should be this FFLAGS and FOPTIM below atn 3.mar.2017
-    FFLAGS="$FFLAGS -warn all -warn nounused"
-    FOPTIM="-fpe0 -fpstkchk -fpmodel except -check all -ftrapuv"
-    FOPTIM="-O0 -noalign -g -traceback"
+FFLAGS="$FFLAGS -warn all -warn nounused"
+FOPTIM="-O2 -align -traceback -xCORE-AVX2 -ip -ftz -fp-model precise"
+NOOPTFILES='obcs_set_connect.F obcs_init_fixed.F'
+#    NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F obcs_set_connect.F obcs_init_fixed.F obcs_set_connect.F'
 
 F90FLAGS=$FFLAGS
 F90OPTIM=$FOPTIM
