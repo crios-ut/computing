@@ -22,9 +22,10 @@ OMPFLAG='-openmp'
 CFLAGS='-fPIC'
 LDADD='-shared-intel'
 
-LIBS="-L${MPI_ROOT}/lib -lmpi -L/nasa/netcdf/4.1.2/lib -lnetcdf"
-INCLUDES="-I${MPI_ROOT}/include -I/nasa/netcdf/4.1.2/include"
-INCLUDEDIRS="${MPI_ROOT}/include"
+NETCDF_DIR=/nasa/netcdf/4.4.1.1_serial
+LIBS="-L${MPI_ROOT}/lib -lmpi -L${NETCDF_DIR}/lib -lnetcdf"
+INCLUDES="-I${MPI_ROOT}/include -I${NETCDF_DIR}/include"
+INCLUDEDIRS="${MPI_ROOT}/include ${NETCDF_DIR}/include"
 #- used for parallel (MPI) DIVA
 MPIINCLUDEDIR="${MPI_ROOT}/include"
 
