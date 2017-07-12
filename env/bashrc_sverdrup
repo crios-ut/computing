@@ -9,5 +9,20 @@ export CVSEDITOR=vim
 #module load c7 intel/17.0 17.0/openmpi/1.10.2-hfi -> compiler errors
 module load c7 intel/17.0 openmpi/2.0.1 
 
+#NETCDF C
+export NETCDFC_ROOT=/share/netcdf-4.4.1.1/
+export NETCDFC_INC=$NETCDFC_ROOT/include
+export NETCDFC_BIN=$NETCDFC_ROOT/bin
+export NETCDFC_LIB=$NETCDFC_ROOT/lib
+#NETCDF Fortran
+export NETCDFF_ROOT=/share/netcdf-fortran-4.4.4
+export NETCDFF_INC=$NETCDFF_ROOT/include
+export NETCDFF_BIN=$NETCDFF_ROOT/bin
+export NETCDFF_LIB=$NETCDFF_ROOT/lib
+
+export LD_LIBRARY_PATH=$LD_LIBRARY_PATH:$NETCDFC_LIB:$NETCDFF_LIB
+export PATH=$PATH:$NETCDFC_BIN:$NETCDFF_BIN
+export INCLUDE=$INCLUDE:$NETCDFC_INC:$NETCDFF_INC
+
 ## MITgcm environment variables
 export MPI_INC_DIR=$MPI_DIR/include
