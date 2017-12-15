@@ -31,6 +31,7 @@ NOOPTFILES='-01 -fp-model precise -g -xCORE-AVX2'
 FFLAGS="$FFLAGS -W0 -WB -convert big_endian -assume byterecl"
 FFLAGS="$FFLAGS -fPIC"
 FFLAGS="$FFLAGS -mcmodel=large -shared-intel"
+FFLAGS="$FFLAGS -132" # extend to 132 columns
 #- might want to use '-r8' for fizhi pkg:
 #FFLAGS="$FFLAGS -r8"
 
@@ -55,22 +56,11 @@ CFLAGS='-O0 -ip -fPIC'
 # INCLUDEDIRS=$(shell $F90C --showme:compile)
 #LIBS=$(shell $F90C --showme:link)
 
-#NETCDF C
-export NETCDF_ROOT=/share/netcdf-4.4.1.1/
-export NETCDF_INC=$NETCDF_ROOT/include
-export NETCDF_BIN=$NETCDF_ROOT/bin
-export NETCDF_LIB=$NETCDF_ROOT/lib
-#NETCDF Fortran
-export NETCDFF_ROOT=/share/netcdf-fortran-4.4.4
-export NETCDFF_INC=$NETCDFF_ROOT/include
-export NETCDFF_BIN=$NETCDFF_ROOT/bin
-export NETCDFF_LIB=$NETCDFF_ROOT/lib
-
-INCLUDEDIRS="/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/include ${NETCDF_INC} ${NETCDFF_INC}"
+INCLUDEDIRS="${MPI_DIR}/include ${NETCDF_FORTRAN_INC} ${NETCDF_INC}"
 #INCLUDES="-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -I${NETCDF_INC}"
-INCLUDES="-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/include -I${NETCDF_INC} -I${NETCDFF_INC}"
+INCLUDES="-I${MPI_DIR}/include -I${NETCDF_FORTRAN_INC} -I${NETCDF_INC}"
 #LIBS="-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,-rpath -Wl,/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,--enable-new-dtags -L/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi -L${NETCDF_DIR} -lnetcdf"
-LIBS="-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,-rpath -Wl,/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,--enable-new-dtags -L/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi -L${NETCDF_LIB} -L${NETCDFF_LIB} -lnetcdf -lnetcdff"
+LIBS="-I${MPI_DIR}/lib -Wl,-rpath -Wl,${MPI_DIR}/lib -Wl,--enable-new-dtags -L${MPI_DIR}/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi -L${NETCDF_FORTRAN_LIB} -L${NETCDF_LIB} -lnetcdf -lnetcdff"
 
 #- used for parallel (MPI) DIVA
 #MPIINCLUDEDIR="${MPI_DIR}"

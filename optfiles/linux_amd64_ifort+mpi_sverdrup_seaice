@@ -41,11 +41,10 @@ F90FLAGS=$FFLAGS
 F90OPTIM=$FOPTIM
 CFLAGS='-O0 -ip -fPIC'
 
-# INCLUDEDIRS=$(shell $F90C --showme:compile)
-#LIBS=$(shell $F90C --showme:link)
-INCLUDEDIRS=/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/include 
-INCLUDES=-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib
-LIBS="-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,-rpath -Wl,/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,--enable-new-dtags -L/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi"
-
+INCLUDEDIRS="${MPI_DIR}/include ${NETCDF_FORTRAN_INC} ${NETCDF_INC}"
+#INCLUDES="-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -I${NETCDF_INC}"
+INCLUDES="-I${MPI_DIR}/include -I${NETCDF_FORTRAN_INC} -I${NETCDF_INC}"
+#LIBS="-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,-rpath -Wl,/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,--enable-new-dtags -L/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi -L${NETCDF_DIR} -lnetcdf"
+LIBS="-I${MPI_DIR}/lib -Wl,-rpath -Wl,${MPI_DIR}/lib -Wl,--enable-new-dtags -L${MPI_DIR}/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi -L${NETCDF_FORTRAN_LIB} -L${NETCDF_LIB} -lnetcdf -lnetcdff"
 #- used for parallel (MPI) DIVA
 #MPIINCLUDEDIR="${MPI_DIR}"
