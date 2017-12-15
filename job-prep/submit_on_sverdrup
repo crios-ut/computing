@@ -5,12 +5,10 @@
 #SBATCH -e my_job.%j.err
 #SBATCH -N 4
 #SBATCH -n 96
-#SBATCH -p sverdrup
 #SBATCH -t 48:00:00
 
 #SBATCH --mail-user=
 #SBATCH --mail-type=begin
 #SBATCH --mail-type=end
 
-mpirun -np 96 -mca btl openib,tcp,self /scratch/tsmith/enso/run.my_job/mitgcmuv
-#  mpiexec -np 96 ./mitgcmuv
+mpiexec -np 96 ./mitgcmuv
