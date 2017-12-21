@@ -11,4 +11,4 @@
 #SBATCH --mail-type=begin
 #SBATCH --mail-type=end
 
-mpiexec -np 96 ./mitgcmuv
+mpiexec --mca btl ^tcp,openib --mca mtl psm2 ./mitgcmuv
