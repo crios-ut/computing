@@ -1,0 +1,52 @@
+#!/bin/bash
+
+
+### Stampede 2 specific ###
+module purge 
+module load TACC
+module load intel/17.0.4 impi/17.0.3
+module load netcdf/4.3.3.1
+module load git
+
+export MPI_INC_DIR=$TACC_IMPI_INC
+
+### MITgcm stuff 
+export NETCDF_BIN=$TACC_NETCDF_BIN
+export NETCDF_ROOT=$TACC_NETCDF_DIR
+export NETCDF_INC=$TACC_NETCDF_INC
+export NETCDF_LIB=$TACC_NETCDF_LIB
+
+### Directories
+export computing=/work/03754/tsmith/computing
+export mitgcm=/work/03754/tsmith/MITgcm
+
+## Other people's stuff
+# Patrick
+export ph_data=/work/03263/heimbach/data
+export ph_work=/work/03263/heimbach/
+export ph_scratch=/scratch/03263/heimbach/
+
+# An
+export an_work=/work/03901/atnguyen
+export an_scratch=/scratch/03901/atnguyen
+
+# Helen
+export hp_work=/work/05773/hpillar
+export hp_scratch=/scratch/05773/hpillar
+
+# Tim
+export ts_work=/work/03754/tsmith
+export ts_scratch=/scratch/03754/tsmith
+
+# Sean
+export sean_work=/work/01268/seanw
+export sean_scratch=/scratch/01268/seanw
+export sean_r3_forcing=/work/01268/seanw/lonestar/ecco_v4_r3_input/input_forcing
+
+# Victor
+export vo_work='/work/04148/vocana/'
+export vo_scratch='/scratch/04148/vocana/'
+
+# Arash
+export ab_work='/work/05471/abigdeli/'
+export ab_scratch='/scratch/05471/abigdeli/'
