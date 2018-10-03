@@ -1,0 +1,27 @@
+## Bash script for submitting jobs on TACC machines
+## Lonestar 5 uses Haswell: 24 cores/node
+
+#!/bin/bash
+
+#SBATCH -J my_job
+#SBATCH -o my_job.%j.out
+#SBATCH -e my_job.%j.err
+#SBATCH -N <number of nodes>
+#SBATCH -n <number of cores>
+#
+# option -p is to choose the queue, the options are
+#  See https://portal.tacc.utexas.edu/user-guides/stampede2#running-queues
+#  for details on the different queues
+# development       
+# normal    
+# large     
+#
+#SBATCH -p <enter queue option here>
+#SBATCH -t 15:00:00
+
+## Enter email address here for begin/end notifications
+#SBATCH --mail-user=
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+
+ibrun tacc_affinity ./mitgcmuv
