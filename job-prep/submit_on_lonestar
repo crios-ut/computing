@@ -10,11 +10,16 @@
 #SBATCH -n <number of cores>
 #
 # option -p is to choose the queue, the options are
-#  See https://portal.tacc.utexas.edu/user-guides/stampede2#running-queues
+#  See https://portal.tacc.utexas.edu/user-guides/lonestar5#running-queues 
 #  for details on the different queues
+#  
 # development       
 # normal    
 # large     
+# gpu
+# viz
+# largemem512GB
+# largemem1TB
 #
 #SBATCH -p <enter queue option here>
 #SBATCH -t 15:00:00
