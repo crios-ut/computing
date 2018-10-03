@@ -16,11 +16,10 @@ export NETCDF_ROOT=$TACC_NETCDF_DIR
 export NETCDF_INC=$TACC_NETCDF_INC
 export NETCDF_LIB=$TACC_NETCDF_LIB
 
-### Directories
-export computing=/work/03754/tsmith/computing
-export mitgcm=/work/03754/tsmith/MITgcm
+### Permissions
+umask 027
 
-## Other people's stuff
+### Directories
 # Patrick
 export ph_data=/work/03263/heimbach/data
 export ph_work=/work/03263/heimbach/
