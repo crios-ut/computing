@@ -1,25 +1,9 @@
 #!/bin/bash
 #
-# For running on TACC's Stampede 2
-#
-# OUTDATED: This optfile builds a multi-architecture binary. Stampede 2 has 2 different
-# types of compute nodes running 2 different CPU architectures; the 
-# multi-architecture capability with the Intel compiler means that processes 
-# can run on either kind of node and choose an optimized version of the code
-# for whichever they're on.
-#
-# UPDATE: I revised the optfile to *not* build a multi-architecture binary. There is a
-# small performance penalty, and more importantly, I discovered that the Intel compiler
-# will actually crash sometimes when trying to compile the generated adjoint code with
-# these options (reproducible, but the crash only happened for me when trying to compile
-# for 96 processes and not when I compiled a 192-process binary)
-#
-# Note that for performance you may need to use many more processes on this
-# machine; the individual cores are actually quite slow and rely on memory
-# bandwidth and massive parallelism for throughput
+# For running on TACC's Stampede 2, skylake nodes
 #
 # Make sure the following modules are loaded:
-#   intel/18.0.0 impi/18.0.0 netcdf parallel-netcdf
+#   intel/17.0.4 impi/17.0.3 netcdf/4.3.3.1 
 
 CC=icc
 FC=ifort
@@ -39,7 +23,7 @@ FFLAGS="$FFLAGS -W0 -WB -convert big_endian -assume byterecl"
 FFLAGS="$FFLAGS -fPIC"
 
 if test "x$IEEE" = x ; then
-    FOPTIM="-align -traceback -xCORE-AVX512 -O3 -ip -ftz -fp-model precise"
+    FOPTIM="-align -traceback -xCORE-AVX512 -O2 -ip -ftz -fp-model precise"
     NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F'
 else
     if test "x$DEVEL" = x ; then
