@@ -26,3 +26,10 @@ export NETCDF_LIB=$TACC_NETCDF_LIB
 ## Not necessary but convenient
 #  export PS1="[stampede \W]\$ "
 #  alias ll='ls -al'
+
+## Increase stack size
+ulimit -s hard
+ulimit -u hard
+
+### Expand environment variables in tab completion ###
+shopt -s direxpand

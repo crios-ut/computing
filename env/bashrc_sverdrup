@@ -12,3 +12,10 @@ module load netcdf-fortran
 
 ## MITgcm environment variables
 export MPI_INC_DIR=$MPI_DIR/include
+
+## Increase stack size
+ulimit -s hard
+ulimit -u hard
+
+### Expand environment variables in tab completion ###
+shopt -s direxpand

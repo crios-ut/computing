@@ -27,3 +27,10 @@ export NETCDF_LIB=$TACC_NETCDF_LIB
 ## These aren't necessary but are nice
 #  export PS1='[lonestar \W]\$ '
 #  alias ll='ls -al'
+
+## Increase stack size
+ulimit -s hard
+ulimit -u hard
+
+### Expand environment variables in tab completion ###
+shopt -s direxpand

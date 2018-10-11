@@ -19,6 +19,13 @@ export NETCDF_LIB=$TACC_NETCDF_LIB
 ### Permissions
 umask 027
 
+## Increase stack size
+ulimit -s hard
+ulimit -u hard
+
+### Expand environment variables in tab completion ###
+shopt -s direxpand
+
 ### Directories
 # Patrick
 export ph_data=/work/03263/heimbach/data
