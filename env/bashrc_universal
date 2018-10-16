@@ -11,66 +11,17 @@ SYSHOST=${myhost#*.}
 first5=$(expr substr $first 1 5)
 
 if [ "$SYSHOST" = "stampede2" ]; then
-    module load intel/18.0.0 impi/18.0.0
-    module load netcdf/4.3.3.1 parallel-netcdf
+    source bashrc_stampede2
 fi
 if [ "$SYSHOST" = "ls5" ]; then
-    module load intel/18.0.2 cray-mpich
-    module load netcdf/4.3.3.1 parallel-netcdf
+    source bashrc_lonestar
 fi
 if [ "$SYSHOST" = "sverdrup" ]; then
-    module load intel openmpi
-    module load netcdf-fortran matlab
-    ## Not sure if necessary
-    export SCRATCH=$SCRATCH
+    source bashrc_sverdrup
 fi
 
 ### Add local binaries to path ### 
 PATH=$PATH:$HOME/bin:$HOME/local/bin
-
-### MITgcm stuff ###
-if [ "$SYSHOST" = "stampede2" ]; then
-    export MPI_INC_DIR=$TACC_IMPI_INC
-fi
-if [ "$SYSHOST" = "ls5" ]; then
-    export MPI_INC_DIR=$MPICH_DIR/include
-fi
-if [ "$SYSHOST" = "sverdrup" ]; then
-    export MPI_INC_DIR=$MPI_DIR/include
-fi
-export NETCDF_BIN=$TACC_NETCDF_BIN
-export NETCDF_ROOT=$TACC_NETCDF_DIR
-export NETCDF_INC=$TACC_NETCDF_INC
-export NETCDF_LIB=$TACC_NETCDF_LIB
-
-### Misc terminal ###
-# Comment this out if you like your terminal display
-if [ -n "$PS1" ]; then
-    if [ "$first5" = "login" ]; then
-        num=$(expr $first : '[^0-9]*\([0-9]*\)')
-        HOST=${SYSHOST}$(echo '-')$num
-    else
-        L=$(expr substr $SYSHOST 1 1 | tr '[:lower:]' '[:upper:]')
-        HOST=$L$first
-    fi
-    PS1='[$HOST \W] '
-fi
-
-### Naming directories ###
-export workdir='/work/05427/iescobar/'
-export aworkdir='/work/03901/atnguyen/'
-export tworkdir='/work/03754/tsmith/';
-export vworkdir='/work/04148/vocana/';
-export pworkdir='/work/03263/heimbach/';
-export pscratchdir='/scratch/03263/heimbach/';
-
-### Matlab stuff ###
-export LM_LICENSE_FILE=$HOME/ices.txt
-#if using matlab older than 2016b
-export LM_LICENSE_FILE=$HOME/.tacc_matlab_license
-
-## permission ###
-umask 027
 
 ### Insert aliases here ###
 # All of these can be commented out
