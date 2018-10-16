@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ### Greeting ###
-echo 'Hello, Bunny!'
+#echo 'Hello, Bunny!'
 
 ### Load modules ### 
 myhost=$(hostname -f)
