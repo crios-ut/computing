@@ -46,9 +46,9 @@ if [ -z ${MPICH_DIR} ] ; then
 	echo "MPICH unset ... "
 else
 
-        INCLUDEDIRS="${MPICH_DIR}/include"
-        INCLUDES="-I${MPICH_DIR}/include"
-        LIBS="-L${MPICH_DIR}/lib -lmpich"
+        INCLUDEDIRS="/opt/cray/pe/mpt/7.7.3/gni/mpich-intel/16.0/include /opt/cray/xpmem/default/include /opt/cray/ugni/default/include /opt/cray/udreg/default/include /opt/cray/dmapp/default/include /opt/cray/pe/pmi/default/include"
+        INCLUDES="-I/opt/cray/pe/mpt/7.7.3/gni/mpich-intel/16.0/include -I/opt/cray/xpmem/default/include -I/opt/cray/ugni/default/include -I/opt/cray/udreg/default/include -I/opt/cray/dmapp/default/include -I/opt/cray/pe/pmi/default/include"
+        LIBS="-L/opt/cray/xpmem/default/lib64 -L/opt/cray/ugni/default/lib64 -L/opt/cray/udreg/default/lib64 -L/opt/cray/pe/pmi/default/lib64 -L/opt/cray/dmapp/default/lib64 -L/opt/cray/pe/mpt/7.7.3/gni/mpich-intel/16.0/lib -ldl -lmpichf90_intel -lmpich_intel -lrt -lugni -lpmi -ldl -lxpmem -lpthread -ludreg"
 	# From mpif90 -show
 #	INCLUDEDIRS="${TACC_CRAY_MPT_INC} ${TACC_CRAY_XPMEM_INC} ${TACC_CRAY_UGNI_INC} ${TACC_CRAY_UDREG_INC} ${TACC_CRAY_PMI_INC} ${TACC_CRAY_DMAPP_INC}"
 #	INCLUDES="-I${TACC_CRAY_MPT_INC} -I${TACC_CRAY_XPMEM_INC} -I${TACC_CRAY_UGNI_INC} -I${TACC_CRAY_UDREG_INC} -I${TACC_CRAY_PMI_INC} -I${TACC_CRAY_DMAPP_INC}"
