@@ -1,11 +1,13 @@
 #!/bin/bash
 
 ### Load modules ### 
-#default: module load intel/16.0.1
-#default: module load cray-mpich/7.3.0 
+# TACC, intel, and cray_mpich are default modules 
+# however, this ensures that they are loaded
+module purge
 module load TACC
+module load intel
+module load cray_mpich
 module load netcdf	
-module load parallel-netcdf
 
 ### Add local binaries/libraries to path ### 
 PATH=$PATH:$HOME/local/bin
