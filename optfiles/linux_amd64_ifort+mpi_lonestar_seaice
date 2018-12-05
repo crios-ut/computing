@@ -8,12 +8,8 @@
 #
 # Note: be sure to load the following modules
 #
+#  (defaults) module load TACC intel cray_mpich
 #  module load netcdf
-#  module load parallel-netcdf
-#  
-#  (default) module load intel
-#  (default) module load 
-#
 #
 #
 # a) For more speed, provided your data size doesn't exceed 2GB you can
@@ -67,10 +63,7 @@ F90FLAGS=$FFLAGS
 F90OPTIM=$FOPTIM
 CFLAGS='-O0 -ip -fPIC'
 
-# From mpif90 -show
-INCLUDEDIRS="/opt/cray/pe/mpt/7.7.3/gni/mpich-intel/16.0/include /opt/cray/xpmem/default/include /opt/cray/ugni/default/include /opt/cray/udreg/default/include /opt/cray/dmapp/default/include /opt/cray/pe/pmi/default/include"
-INCLUDES="-I/opt/cray/pe/mpt/7.7.3/gni/mpich-intel/16.0/include -I/opt/cray/xpmem/default/include -I/opt/cray/ugni/default/include -I/opt/cray/udreg/default/include -I/opt/cray/dmapp/default/include -I/opt/cray/pe/pmi/default/include"
-LIBS="-L/opt/cray/xpmem/default/lib64 -L/opt/cray/ugni/default/lib64 -L/opt/cray/udreg/default/lib64 -L/opt/cray/pe/pmi/default/lib64 -L/opt/cray/dmapp/default/lib64 -L/opt/cray/pe/mpt/7.7.3/gni/mpich-intel/16.0/lib -ldl -lmpichf90_intel -lmpich_intel -lrt -lugni -lpmi -ldl -lxpmem -lpthread -ludreg"
-LIBS="${LIBS} -L${TACC_NETCDF_LIB} -lnetcdf -lnetcdff"
-#- used for parallel (MPI) DIVA
-MPIINCLUDEDIR="${MPICH_DIR}"
+INCLUDEDIRS="${MPICH_DIR}/include ${TACC_NETCDF_INC}"
+INCLUDES="-I${MPICH_DIR}/include -I${TACC_NETCDF_INC}"
+LIBS="-L${MPICH_DIR}/lib -lmpich -L${TACC_NETCDF_LIB} -lnetcdf -lnetcdff"
+MPIINCLUDEDIR="${MPICH_DIR}/include"

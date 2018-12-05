@@ -5,11 +5,9 @@
 #
 # Note: be sure to load the following modules
 #
+#  (defaults) module load TACC intel cray_mpich
 #  module load netcdf
-#  module load parallel-netcdf
 #  
-#  (default) module load intel
-#  (default) module load cray-mpich
 #
 #-------
 
@@ -25,13 +23,11 @@ EXTENDED_SRC_FLAG='-132'
 GET_FC_VERSION="--version"
 OMPFLAG='-openmp'
 
-#NOOPTFLAGS='-O0 -g'
-NOOPTFILES='01 -fp-model precise -g -xCORE-AVX2'
+NOOPTFILES='-O1 -fp-model precise -g -xCORE-AVX2'
 
 FFLAGS="$FFLAGS -W0 -WB -convert big_endian -assume byterecl"
 FFLAGS="$FFLAGS -fPIC"
 FFLAGS="$FFLAGS -mcmodel=large -shared-intel"
-FFLAGS="$FFLAGS $EXTENDED_SRC_FLAG"
 #- might want to use '-r8' for fizhi pkg:
 #FFLAGS="$FFLAGS -r8"
 
@@ -46,16 +42,10 @@ CFLAGS='-O0 -ip -fPIC'
 if [ -z ${MPICH_DIR} ] ; then
 	echo "MPICH unset ... "
 else
-
-	    # From mpif90 -show
-        INCLUDEDIRS="/opt/cray/pe/mpt/7.7.3/gni/mpich-intel/16.0/include /opt/cray/xpmem/default/include /opt/cray/ugni/default/include /opt/cray/udreg/default/include /opt/cray/dmapp/default/include /opt/cray/pe/pmi/default/include"
-        INCLUDES="-I/opt/cray/pe/mpt/7.7.3/gni/mpich-intel/16.0/include -I/opt/cray/xpmem/default/include -I/opt/cray/ugni/default/include -I/opt/cray/udreg/default/include -I/opt/cray/dmapp/default/include -I/opt/cray/pe/pmi/default/include"
-        LIBS="-L/opt/cray/xpmem/default/lib64 -L/opt/cray/ugni/default/lib64 -L/opt/cray/udreg/default/lib64 -L/opt/cray/pe/pmi/default/lib64 -L/opt/cray/dmapp/default/lib64 -L/opt/cray/pe/mpt/7.7.3/gni/mpich-intel/16.0/lib -ldl -lmpichf90_intel -lmpich_intel -lrt -lugni -lpmi -ldl -lxpmem -lpthread -ludreg"
-	# From mpif90 -show
-#	INCLUDEDIRS="${TACC_CRAY_MPT_INC} ${TACC_CRAY_XPMEM_INC} ${TACC_CRAY_UGNI_INC} ${TACC_CRAY_UDREG_INC} ${TACC_CRAY_PMI_INC} ${TACC_CRAY_DMAPP_INC}"
-#	INCLUDES="-I${TACC_CRAY_MPT_INC} -I${TACC_CRAY_XPMEM_INC} -I${TACC_CRAY_UGNI_INC} -I${TACC_CRAY_UDREG_INC} -I${TACC_CRAY_PMI_INC} -I${TACC_CRAY_DMAPP_INC}"
-#	LIBS="-L${TACC_CRAY_MPT_LIB} -L${TACC_CRAY_XPMEM_LIB} -L${TACC_CRAY_UGNI_LIB} -L${TACC_CRAY_UDREG_LIB} -L${TACC_CRAY_PMI_LIB} -L${TACC_CRAY_DMAPP_LIB} -ldl -lmpichf90_intel -lmpich_intel -lrt -lugni -lxpmem -lpthread -ludreg -lmpich"
-	MPIINCLUDEDIR="${MPICH_DIR}"
+    INCLUDEDIRS="${MPICH_DIR}/include"
+    INCLUDES="-I${MPICH_DIR}/include"
+    LIBS="-L${MPICH_DIR}/lib -lmpich"
+	MPIINCLUDEDIR="${MPICH_DIR}/include"
 fi
 
 # Now test for netcdf 
