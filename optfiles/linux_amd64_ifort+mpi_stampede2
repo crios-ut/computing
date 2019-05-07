@@ -33,7 +33,7 @@ FFLAGS="$FFLAGS -W0 -WB -convert big_endian -assume byterecl"
 FFLAGS="$FFLAGS -fPIC"
 
 if test "x$IEEE" = x ; then
-    FOPTIM="-align -traceback -xMIC-AVX512 -O2 -ip -ftz -fp-model precise"
+    FOPTIM="-align -traceback -xMIC-AVX512 -O3 -ip -ftz -fp-model precise"
     NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F'
 else
     if test "x$DEVEL" = x ; then
@@ -47,7 +47,7 @@ fi
 
 F90FLAGS=$FFLAGS
 F90OPTIM=$FOPTIM
-CFLAGS="-O2 -ip -fPIC"
+CFLAGS="-O3 -ip -fPIC"
 
 INCLUDEDIRS="${TACC_IMPI_INC} ${TACC_NETCDF_INC}"
 INCLUDES="-I${TACC_IMPI_INC} -I${TACC_NETCDF_INC}"
