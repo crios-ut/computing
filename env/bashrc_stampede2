@@ -27,6 +27,9 @@ ulimit -u hard
 shopt -s direxpand
 
 ### Directories
+# Community portal
+export community=/work/projects/aci/ECCO/community
+
 # Patrick
 export ph_data=/work/03263/heimbach/data
 export ph_work=/work/03263/heimbach/
