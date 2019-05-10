@@ -17,7 +17,7 @@ export PYTHONPATH=$PYTHONPATH:$communitydir/python/xmitgcm
 export PYTHONPATH=$PYTHONPATH:$communitydir/python/ECCOv4-py
 export PYTHONPATH=$PYTHONPATH:$communitydir/python/ECCOv4-py/ecco_v4_py
 export PYTHONPATH=$PYTHONPATH:$communitydir/python/xecco
-export PYTHONPATH=$PYTHONPATH:$communitydir/ECCO/ECCOv4/Release3/MITgcm_c66g/utils/python/MITgcmutils
+export PYTHONPATH=$PYTHONPATH:$communitydir/python/MITgcmutils
 
 
 ### MITgcm stuff 
