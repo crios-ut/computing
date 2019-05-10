@@ -8,9 +8,20 @@ module load intel/17.0.4 impi/17.0.3
 module load netcdf/4.3.3.1
 module load git
 
-export MPI_INC_DIR=$TACC_IMPI_INC
+### Community portal directory
+export communitydir=/work/projects/aci/ECCO/community
+
+### Python path for the summer school (and beyond?)
+export PYTHONPATH=$PYTHONPATH:$communitydir/python/xgcm
+export PYTHONPATH=$PYTHONPATH:$communitydir/python/xmitgcm
+export PYTHONPATH=$PYTHONPATH:$communitydir/python/ECCOv4-py
+export PYTHONPATH=$PYTHONPATH:$communitydir/python/ECCOv4-py/ecco_v4_py
+export PYTHONPATH=$PYTHONPATH:$communitydir/python/xecco
+export PYTHONPATH=$PYTHONPATH:$communitydir/ECCO/ECCOv4/Release3/MITgcm_c66g/utils/python/MITgcmutils
+
 
 ### MITgcm stuff 
+export MPI_INC_DIR=$TACC_IMPI_INC
 export NETCDF_BIN=$TACC_NETCDF_BIN
 export NETCDF_ROOT=$TACC_NETCDF_DIR
 export NETCDF_INC=$TACC_NETCDF_INC
@@ -26,9 +37,7 @@ ulimit -u hard
 ### Expand environment variables in tab completion ###
 shopt -s direxpand
 
-### Directories
-# Community portal
-export community=/work/projects/aci/ECCO/community
+### Other Directories
 
 # Patrick
 export ph_data=/work/03263/heimbach/data
