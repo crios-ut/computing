@@ -70,6 +70,6 @@ export ab_work='/work/05471/abigdeli/'
 export ab_scratch='/scratch/05471/abigdeli/'
 
 # Ivana
-export ie_work='/work/05427/iescobar/'
-export ie_scratch='/scratch/05427/iescobar/'
-
+export ie_work=/work/05427/iescobar
+export ie_scratch=/scratch/05427/iescobar
+export ie_swot=$ie_work/llc/llc4320/NA_4320x2160x1080x90
