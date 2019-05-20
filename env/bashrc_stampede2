@@ -4,7 +4,7 @@
 ### Stampede 2 specific ###
 module purge 
 module load TACC
-module load intel/17.0.4 impi/17.0.3
+module load intel/18.0.2 impi/18.0.2
 module load netcdf/4.3.3.1
 module load git
 
@@ -16,7 +16,6 @@ export PYTHONPATH=$PYTHONPATH:$communitydir/python/xgcm
 export PYTHONPATH=$PYTHONPATH:$communitydir/python/xmitgcm
 export PYTHONPATH=$PYTHONPATH:$communitydir/python/ECCOv4-py
 export PYTHONPATH=$PYTHONPATH:$communitydir/python/ECCOv4-py/ecco_v4_py
-export PYTHONPATH=$PYTHONPATH:$communitydir/python/xecco
 export PYTHONPATH=$PYTHONPATH:$communitydir/python/MITgcmutils
 
 
