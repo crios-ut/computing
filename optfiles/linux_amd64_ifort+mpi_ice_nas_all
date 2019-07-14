@@ -8,7 +8,7 @@
 # Be sure to load modules: 
 #       module load comp-intel 
 #       module load mpi-sgi/mpt 
-#       module load netcdf/4.1.2
+#       module load netcdf
 #
 # ------------------------------------------------------------------------------------
 
@@ -22,8 +22,8 @@ OMPFLAG='-openmp'
 CFLAGS='-fPIC'
 LDADD='-shared-intel'
 
-NETCDF_DIR=/nasa/netcdf/4.4.1.1_serial
-LIBS="-L${MPI_ROOT}/lib -lmpi -L${NETCDF_DIR}/lib -lnetcdf"
+NETCDF_DIR=$NETCDF
+LIBS="-L${MPI_ROOT}/lib -lmpi -L${NETCDF_DIR}/lib -lnetcdf -lnetcdff"
 INCLUDES="-I${MPI_ROOT}/include -I${NETCDF_DIR}/include"
 INCLUDEDIRS="${MPI_ROOT}/include ${NETCDF_DIR}/include"
 #- used for parallel (MPI) DIVA
