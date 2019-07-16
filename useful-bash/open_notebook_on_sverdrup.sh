@@ -3,6 +3,8 @@
 # Run this on a compute node, then use the alias'd ssh function to 
 # connect to the notebook on your local machine (i.e. your laptop)
 
+# Please see 'connect_to_sverdrup_notebook.sh' for instructions on how to use this
+
 export port_number=8890
 
 # A script to get a notebook going on sverdrup compute node
