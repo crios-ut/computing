@@ -4,7 +4,8 @@
 # The steps are:
 #   1. Connect to sverdrup and open up interactive session on a compute node
 #   2. Execute 'open_notebook_on_sverdrup.sh' on the compute node
-#   3. This returns an IP address, say XX.X.X.X
+#   3. This returns an IP address, saying
+#       "your internet connection is: XX.X.X.X"
 #   4. Use the alias below on your local machine (e.g. your laptop) to connect as:
 #       jupytersv XX.X.X.X 
 #   5. Open up a web browser and navigate to

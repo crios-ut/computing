@@ -1,5 +1,10 @@
 #! /bin/bash
 
+# Run this on a compute node, then use the alias'd ssh function to 
+# connect to the notebook on your local machine (i.e. your laptop)
+
+export port_number=8890
+
 # A script to get a notebook going on sverdrup compute node
 unset XDG_RUNTIME_DIR
 
@@ -9,4 +14,4 @@ export internet_connect=`ip address show eth0 | grep -Po '(?<=[inet]) (\d+\.\d+\
 echo 'internet connection is:' $internet_connect
 
 # open the notebook
-jupyter notebook --no-browser --port=8890 --ip=$internet_connect
+jupyter notebook --no-browser --port=$port_number --ip=$internet_connect
