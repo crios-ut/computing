@@ -8,7 +8,6 @@
 #  (defaults) module load TACC intel cray_mpich
 #  module load netcdf
 #  
-#
 #-------
 
 CC=icc
@@ -30,8 +29,10 @@ FFLAGS="$FFLAGS -fPIC"
 FFLAGS="$FFLAGS -mcmodel=large -shared-intel"
 #- might want to use '-r8' for fizhi pkg:
 #FFLAGS="$FFLAGS -r8"
+FFLAGS="$FFLAGS -warn all -warn nounused"
 
-FOPTIM='-O2 -align -traceback -xCORE-AVX2 -ip -ftz -fp-model precise'
+FOPTIM='-O3 -align -traceback -xCORE-AVX2 -ip -ftz -fp-model precise'
+NOOPTFILES='obcs_set_connect.F obcs_init_fixed.F'
 NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F'
 
 F90FLAGS=$FFLAGS
