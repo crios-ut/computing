@@ -2,8 +2,12 @@
 #
 # For running on TACC's Stampede 2
 #
-# UPDATE: I revised the optfile to *not* build a multi-architecture binary. There is a
-# small performance penalty, and more importantly, I discovered that the Intel compiler
+# UPDATE: updated to O3 optimization available in Stampede2. Most useful for 
+# Skylake nodes instead of Knights Landing nodes. There are more KNL nodes, but 
+# their clock speed is about 50% the clock speed of SKX nodes. If running
+# parallel scaled code, use SKX. 
+# UPDATE: The optfile will *not* build a multi-architecture binary. There is a
+# small performance penalty, and more importantly, the Intel compiler
 # will actually crash sometimes when trying to compile the generated adjoint code with
 # these options (reproducible, but the crash only happened for me when trying to compile
 # for 96 processes and not when I compiled a 192-process binary)
@@ -13,7 +17,7 @@
 # bandwidth and massive parallelism for throughput
 #
 # Make sure the following modules are loaded:
-#   intel/17.0.4 impi/17.0.3 netcdf/4.3.3.1 
+#   intel/18.0.0 impi/18.0.0 netcdf parallel-netcdf
 
 CC=icc
 FC=ifort
@@ -25,15 +29,15 @@ CPP='cpp -traditional -P'
 F90FIXEDFORMAT='-fixed -Tf'
 EXTENDED_SRC_FLAG='-132'
 GET_FC_VERSION="--version"
-OMPFLAG='-openmp'
+OMPFLAG="-openmp"
 
-NOOPTFLAGS='-O1 -fp-model precise'
+NOOPTFLAGS="-O1 -fp-model precise" # -ip -fno-fat-lto-objects"
 
 FFLAGS="$FFLAGS -W0 -WB -convert big_endian -assume byterecl"
 FFLAGS="$FFLAGS -fPIC"
 
 if test "x$IEEE" = x ; then
-    FOPTIM="-align -traceback -xMIC-AVX512 -O3 -ip -ftz -fp-model precise"
+    FOPTIM="-align -traceback -xCORE-AVX512 -O3 -ip -ftz -fp-model fast"
     NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F'
 else
     if test "x$DEVEL" = x ; then
