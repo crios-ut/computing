@@ -1,0 +1,74 @@
+#!/bin/bash
+#
+# For running on the ICES cluster Sverdrup
+#  Compiler optimizations for Intel E5-2695 v3 (Haswell) Processors
+#  Note: only difference from lonestar opt file is the netcdf module load
+#
+# Note: be sure to load the following modules
+#
+#  module load c7
+#  module load intel/17.0
+#  module load mvapich2
+#
+#-------
+
+CC=icc
+FC=ifort
+#F90C=mpifort
+#LINK="$F90C -no-ipo"
+
+# From code-async ... unsure about intel_commitqq
+#DEFINES='-DALLOW_USE_MPI -DWORDLENGTH=4 -DINTEL_COMMITQQ -DALLOW_ASYNCIO'
+DEFINES='-DALLOW_USE_MPI -DWORDLENGTH=4 -DALLOW_ASYNCIO -DINTEL_COMMITQQ'
+CPP='cpp -traditional -P'
+F90FIXEDFORMAT='-fixed -Tf'
+EXTENDED_SRC_FLAG='-132'
+GET_FC_VERSION="--version"
+OMPFLAG='-openmp'
+
+#NOOPTFLAGS='-O0 -g'
+#NOOPTFILES='-01 -fp-model precise'
+NOOPTFILES='-00'
+
+CFLAGS='-O0'
+FFLAGS="$FFLAGS -convert big_endian -assume byterecl"
+CFLAGS="$CFLAGS -fPIC"
+FFLAGS="$FFLAGS -fPIC"
+FFLAGS="$FFLAGS -mcmodel=large"
+#FFLAGS="$FFLAGS -shared-intel"
+FFLAGS="$FFLAGS -132" # extend to 132 columns
+#- might want to use '-r8' for fizhi pkg:
+#FFLAGS="$FFLAGS -r8"
+
+LDADD='-shared-intel'
+
+FFLAGS="$FFLAGS -W0 -WB"
+if test "x$IEEE" = x ; then     #- with optimisation:
+    FOPTIM='-O2 -align -traceback -xCORE-AVX2 -ip -ftz -fp-model precise'
+    #NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F'
+    NOOPTFILES='seaice_init_varia.F seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F ini_parms.F'
+else
+  if test "x$DEVEL" = x ; then  #- no optimisation + IEEE :
+    # "-mp" is for ieee "maintain precision"
+    FOPTIM='-O0 -noalign'
+  else                          #- development/check options:
+    
+    FOPTIM="-O0 -noalign -g -traceback"
+    NOOPTFLAGS=$FOPTIM
+    NOOPTFILES='adread_adwrite.F mdsio_rw_field.F mdsio_rw_slice.F'
+    FOPTIM="$FOPTIM -warn all -warn nounused"
+    FOPTIM="$FOPTIM -fpe0 -ftz -fp-stack-check -check all -ftrapuv"
+  fi
+fi
+
+F90FLAGS=$FFLAGS
+F90OPTIM=$FOPTIM
+# INCLUDEDIRS=$(shell $F90C --showme:compile)
+#LIBS=$(shell $F90C --showme:link)
+
+INCLUDEDIRS="${MPI_DIR}/include ${NETCDF_FORTRAN_INC} ${NETCDF_INC}"
+INCLUDES="-I${MPI_DIR}/include -I${NETCDF_FORTRAN_INC} -I${NETCDF_INC}"
+LIBS="-I${MPI_DIR}/lib -L${MPI_DIR}/lib -lmpi -lmpifort -lfmpich -lmpich -L${NETCDF_FORTRAN_LIB} -L${NETCDF_LIB} -lnetcdf -lnetcdff"
+
+#- used for parallel (MPI) DIVA
+MPIINCLUDEDIR="${MPI_DIR}"
