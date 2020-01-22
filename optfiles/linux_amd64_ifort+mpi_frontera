@@ -39,8 +39,9 @@ F90FLAGS=$FFLAGS
 F90OPTIM=$FOPTIM
 CFLAGS="-O3 -ip -fPIC"
 
+# From running: `mpiifort -show`
 INCLUDEDIRS="${TACC_IMPI_INC} ${TACC_NETCDF_INC}"
 INCLUDES="-I${TACC_IMPI_INC} -I${TACC_NETCDF_INC}"
-LIBS="-L${TACC_IMPI_LIB} -lmpi -lmpifort -L${TACC_NETCDF_LIB} -lnetcdf -lnetcdff"
+LIBS="-L${TACC_IMPI_LIB}/release -L${TACC_IMPI_LIB} -lmpi -lmpifort -L${TACC_NETCDF_LIB} -lnetcdf -lnetcdff"
 MPIINCLUDEDIR="${TACC_IMPI_INC}"
 
