@@ -1,0 +1,27 @@
+## Bash script for submitting jobs on TACC machines
+##
+## Frontera
+##   Cascade Lake (CLX): 56 cores/node
+
+#!/bin/bash
+
+#SBATCH -J my_job
+#SBATCH -o my_job.%j.out
+#SBATCH -e my_job.%j.err
+#SBATCH -N <number of nodes>
+#SBATCH -n <number of cores>
+#
+# option -p is to choose the queue, the options are
+#  standard queues are "development", "normal", "large"
+#  See https://fronteraweb.tacc.utexas.edu/user-guide/running/#table-5-frontera-production-queues
+#  for details on the different queues
+# 
+#SBATCH -p <insert queue option here>
+#SBATCH -t 15:00:00
+
+## Enter email address here for begin/end notifications
+#SBATCH --mail-user=
+#SBATCH --mail-type=begin
+#SBATCH --mail-type=end
+
+ibrun tacc_affinity ./mitgcmuv
