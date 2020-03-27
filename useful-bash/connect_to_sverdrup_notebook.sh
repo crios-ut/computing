@@ -1,6 +1,6 @@
 #!/bin/bash 
 
-# Add this to your bashrc to connect to jupyter notebooks on Sverdrup easier.
+# Add this to your bashrc on your local machine (i.e., your laptop) to connect to jupyter notebooks on Sverdrup easier.
 # The steps are:
 #   1. Connect to sverdrup and open up interactive session on a compute node
 #   2. Execute 'open_notebook_on_sverdrup.sh' on the compute node
@@ -19,8 +19,8 @@
 #   2. unset the temp function after running the desired ssh command
 #   3. execute
 export port_number='8890'
-export ssh_jump='-J login1.ices.utexas.edu'
+export ssh_jump='-J login1.oden.utexas.edu'
 alias jupytersv='temporary_function(){
-    ssh -p 8704 -i ~/.ssh/sverdrup_rsa '$ssh_jump' -L localhost:'$port_number':"$@":'$port_number' sverdrup.ices.utexas.edu; 
+    ssh -p 8704 -i ~/.ssh/sverdrup_rsa '$ssh_jump' -L localhost:'$port_number':"$@":'$port_number' sverdrup.oden.utexas.edu; 
     unset -f temporary_function;}; 
     temporary_function'
