@@ -4,23 +4,19 @@
 # The steps are:
 #   1. Connect to sverdrup and open up interactive session on a compute node
 #   2. Execute 'open_notebook_on_sverdrup.sh' on the compute node
-#   3. This returns an IP address, saying
+#   3. This returns a port number and IP address, saying
+#       "your port number is is: PPPP"
 #       "your internet connection is: XX.X.X.X"
-#   4. Use the alias below on your local machine (e.g. your laptop) to connect as:
-#       jupytersv XX.X.X.X 
+#   4. Source this file on your local machine (e.g. your laptop) so that
+#      you can use the jupytersv command as follows:
+#       jupytersv PPPP XX.X.X.X 
 #   5. Open up a web browser and navigate to
 #       https://localhost:PPPP
-#      where PPPP is the port_number set below
+#      where PPPP is the port number 
 
 ### Connect to Jupyter notebook on Sverdrup ###
-# For compute node notebook, need to pass IP address
-# The alias below does this by:
-#   1. Create a temporary function which takes in passed arguments
-#   2. unset the temp function after running the desired ssh command
-#   3. execute
-export port_number='8890'
+# For compute node notebook, need to pass port number and IP address
 export ssh_jump='-J login1.oden.utexas.edu'
-alias jupytersv='temporary_function(){
-    ssh -p 8704 -i ~/.ssh/sverdrup_rsa '$ssh_jump' -L localhost:'$port_number':"$@":'$port_number' sverdrup.oden.utexas.edu; 
-    unset -f temporary_function;}; 
-    temporary_function'
+jupytersv () {
+    ssh -p 8704 $ssh_jump -L localhost:$1:$2:$1 sverdrup.oden.utexas.edu; 
+}
