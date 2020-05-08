@@ -51,5 +51,5 @@ fi
 #FFLAGS="$FFLAGS -r8"
 
 #- For really big executable (> 2 GB), uncomment following 2 lines
-#FFLAGS="$FFLAGS -mcmodel=medium -shared-intel"
-#CFLAGS="$CFLAGS -mcmodel=medium -shared-intel"
+FFLAGS="$FFLAGS -mcmodel=large -shared-intel"
+CFLAGS="$CFLAGS -mcmodel=large -shared-intel"
