@@ -39,6 +39,7 @@ FFLAGS="$FFLAGS -fPIC"
 if test "x$IEEE" = x ; then
     FOPTIM="-align -traceback -xCORE-AVX512 -O3 -ip -ftz -fp-model fast"
     NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F'
+    NOOPTFILES='obcs_set_connect.F obcs_init_fixed.F'
 else
     if test "x$DEVEL" = x ; then
         FOPTIM='-O0 -noalign -traceback -xMIC-AVX512 -ip -mp'
