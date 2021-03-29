@@ -21,6 +21,8 @@ NOOPTFLAGS='-O1 -fp-model precise'
 
 FFLAGS="$FFLAGS -W0 -WB -convert big_endian -assume byterecl"
 FFLAGS="$FFLAGS -fPIC"
+FFLAGS="$FFLAGS -mcmodel=large -shared-intel"
+CFLAGS="$CFLAGS -mcmodel=large -shared-intel"
 
 if test "x$IEEE" = x ; then
     FOPTIM="-align -traceback -xCORE-AVX512 -O3 -ip -ftz -fp-model precise"
