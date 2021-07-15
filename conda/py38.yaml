@@ -1,0 +1,53 @@
+name: py38
+channels:
+  - conda-forge
+dependencies:
+    - python=3.8
+# Basics
+    - numpy
+    - scipy
+    - future
+# xarray et al
+    - xarray
+    - netCDF4
+    - bottleneck
+    - dask
+    - cftime
+    - nc-time-axis>=1.2.0
+    - xmitgcm
+    - xgcm
+    - ecco_v4_py
+# plotting resampling
+    - cartopy
+    - cmocean
+    - pyresample
+# for other packages
+    - cachetools
+    - fsspec
+    - zarr
+    - coverage
+    - pytest-cov 
+    - codecov
+    - black
+    - docrep<=0.2.7
+    - aiohttp
+# jupyter etc
+    - jupyter
+    - jupyterlab
+    - ipython
+    - ipykernel
+# etc
+    - gsw
+    - vaex
+    - numba
+    - h5py
+    - hdf4
+    - hdf5
+# docs
+    - sphinx
+    - sphinx_rtd_theme
+    - numpydoc
+    - nbsphinx
+# Specify blas to use mkl
+    - mkl
+    - libblas=*=*mkl
