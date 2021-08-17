@@ -7,17 +7,17 @@
 
    - Grab one of the scripts for installing miniconda, depending on if you want [Python 3.8](https://repo.anaconda.com/miniconda/Miniconda3-py39_4.9.2-Linux-x86_64.sh) or [Python 3.9](https://repo.anaconda.com/miniconda/Miniconda3-latest-Linux-x86_64.sh).
 
-   - Secure copy (scp) the script to Sverdrup using the following command (on your local machine). If you are not using the VPN, you need to jump through the login node. You can read more [here](https://www.oden.utexas.edu/sysdocs/ssh/index.html). Use the following command -
+   - Secure copy (scp) the script to Sverdrup using the following command (on your local machine, i.e. your laptop). If you are not using the VPN, you need to jump through the login node. You can read more [here](https://www.oden.utexas.edu/sysdocs/ssh/index.html). Use the following command -
    ```
    scp -J username@login1.oden.utexas.edu script_path/script_name username@sverdrup.oden.utexas.edu:/home/username/desired_path/desired_script_name
    ```
-     Here `script_path` and `script_name` refer to the path and name of the script on your local machine. Similarly, `desired_script_path` and `desired_script_name` refer to the desired path and name of the script on Sverdrup.
+     Here `script_path` and `script_name` refer to the path and name of the script on your local machine (i.e. your laptop). Similarly, `desired_script_path` and `desired_script_name` refer to the desired path and name of the script on Sverdrup.
 
    - Run the scripts as described [here](https://docs.conda.io/projects/conda/en/latest/user-guide/install/linux.html). Most likely, only the following command will be needed (assuming the script is in your CWD)- `bash desired_script_name`.
 
 2. **Create conda environment**
 
-  - One of the many ways is to use a **yaml** file that contains a comprehensive list of packages that you need. For example, once can use the file [py38.yaml](../conda/py38.yaml) in this same repository.
+  - One of the many ways is to use a **yaml** file that contains a comprehensive list of packages that you need. For example, one can use the file [py38.yaml](../conda/py38.yaml) in this same repository.
 
   - Use this command to create the conda environment -
   ```
@@ -83,6 +83,8 @@
     jupyter notebook --certfile=mycert.pem --keyfile mykey.key
     ```
 
+    This step might not be necessary if you add `mycert.pem` and `mykey.key` manually to `jupyter_notebook_config.py`.
+
   - Running a public notebook server
 
     In the `~/.jupyter` directory, edit the notebook config file, `jupyter_notebook_config.py`. By default, the notebook config file has all fields commented out. The minimum set of configuration options that you should uncomment and edit in `jupyter_notebook_config.py` is the following:
@@ -108,31 +110,26 @@
     srun -t 1440 -N 1 --ntasks 4 --cpus-per-task=7 --pty bash -i
     ```
 
-    2. Unset this variable to avoid some permissions issues. On a terminal in the compute node type:
-    ```
-    unset XDG_RUNTIME_DIR
-    ```
-
-    3. Activate your conda environment on the compute node. Use this command to activate the environment `py38` (see Prerequisites) and add it to your jupyter kernel.
+    2. Activate your conda environment on the compute node. Use this command to activate the environment `py38` (see Prerequisites) and add it to your jupyter kernel.
     ```
     conda activate py38
     python -m ipykernel install --user --name=py38
     ```
 
-    4. Run `open_notebook_on_sverdrup.sh`
+    3. Run [open_notebook_on_sverdrup.sh](open_notebook_on_sverdrup.sh)
 
        You will get IP XX.X.X.XX, and port number PPPP
 
-    5. Source `connect_to_sverdrup_notebook.sh` in the `.bashrc` on your local machine so that you can use the `jupytersv` command.
+    4. Source [connect_to_sverdrup_notebook.sh](connect_to_sverdrup_notebook.sh) in the `.bashrc` on your local machine (i.e. your laptop) so that you can use the `jupytersv` command.
 
        ```
        source connect_to_sverdrup_notebook.sh
        ```
 
-    6. Run the command -
+    5. On your local machine (i.e. your laptop), run the command -
 
        ```
        jupytersv PPPP XX.X.X.XX
        ```
 
-    7. Open up a web browser and navigate to https://localhost:PPPP.
+    6. Open up a web browser and navigate to https://localhost:PPPP.
