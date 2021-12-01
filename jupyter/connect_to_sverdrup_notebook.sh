@@ -20,3 +20,17 @@ export ssh_jump='-J login1.oden.utexas.edu'
 jupytersv () {
     ssh $ssh_jump -L localhost:$1:$2:$1 sverdrup.oden.utexas.edu; 
 }
+# Without giving a remote (oden) username, your local username will be passed. So if these don't match, you can modify $ssh_jump:
+# export ssh_jump='-J yourodenusername@login1.oden.utexas.edu'
+# or give your remote username in your local ~/.ssh/config file:
+#
+# Host *
+#    user yourodenusername
+#
+# If this still fails, returning a Permission denied (publickey) error, point to your key:
+# export ssh_jump='-i ~/.ssh/yourodenkeyname -J yourodenusername@login1.oden.utexas.edu'
+#
+# If this still fails(!) match the command you usually use to jump through login1. Not sure why I need to repeat the key/username/host, but my working call is:
+#jupytersv () {
+#    ssh -Ao ProxyCommand="ssh -i ~/.ssh/id_rsa_ices -W %h:%p pillarh@login1.oden.utexas.edu" -L $1:$2:$1 -i ~/.ssh/id_rsa_ices -N -f -l pillarh sverdrup.oden.utexas.edu;
+#}
