@@ -133,3 +133,5 @@
        ```
 
     6. Open up a web browser and navigate to https://localhost:PPPP.
+    
+    7. If using Google Chrome, you may need to allow requests to localhost. Head to chrome://flags/#allow-insecure-localhost and enable the option "Allow invalid certficates for resources loaded from localhost
