@@ -133,3 +133,5 @@
        ```
 
     6. Open up a web browser and navigate to https://localhost:PPPP.
+    
+    7. If using Google Chrome, you may be told that connection to localhost is insecure. To continue, click anywhere on the Chrome window and type "thisisunsafe", and you will arrive at a jupyter notebook login screen. Enter your Sverdrup password to proceed.
