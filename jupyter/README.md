@@ -110,7 +110,7 @@
     srun -t 1440 -N 1 --ntasks 4 --cpus-per-task=7 --pty bash -i
     ```
 
-    2. Activate your conda environment on the compute node. Use this command to activate the environment `py38` (see Prerequisites) and add it to your jupyter kernel.
+    2. Activate your conda environment on the compute node. Use this command to activate the environment `py38` (see [Prerequisites](#prerequisites)) and add it to your jupyter kernel.
     ```
     conda activate py38
     python -m ipykernel install --user --name=py38
@@ -132,6 +132,8 @@
        jupytersv PPPP XX.X.X.XX
        ```
 
-    6. Open up a web browser and navigate to https://localhost:PPPP.
+    6. Open up a web browser and navigate to https://localhost:PPPP
+      
+         NOTE: If your browser experiences a timeout or does not load the Jupyter connection, you may optionally navigate to http://localhost:PPPP
     
     7. If using Google Chrome, you may be told that connection to localhost is insecure. To continue, click anywhere on the Chrome window and type "thisisunsafe", and you will arrive at a jupyter notebook login screen. Enter your Sverdrup password to proceed.
