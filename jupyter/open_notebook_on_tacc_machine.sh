@@ -16,5 +16,5 @@ unset XDG_RUNTIME_DIR
 echo 'port numer is: ' $port_number
 
 # open the notebook                                                            
-                                                                                
+                                                                               
 jupyter notebook --no-browser --port=$port_number --ip=*
