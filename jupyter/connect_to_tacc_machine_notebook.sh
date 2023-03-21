@@ -23,17 +23,17 @@
 # NOTE: 
 
 # For notebook, need to pass port number and IP address using the following convention          
-# (where "<cxxx-xxx>"" is the compute node the server is running on, and "<TACC_machine>" 
-# is the name of the TACC machine the compute node is running on (i.e. "stampede2", "frontera", etc)):
+# (where  "<TACC_machine>" is the name of the TACC machine the compute node is running 
+# on (i.e. "stampede2", "frontera", etc)):
 
 # jupyter_tacc () {
-#     ssh -L localhost:$1:$2:$1 <cxxx-xxx>.<TACC_machine>.tacc.utexas.edu;             
+#     ssh -L localhost:$1:$2:$1 <TACC_machine>.tacc.utexas.edu;             
 # }
 
 # The following example is used to connect a jupyter notebook
 # server running on a stampede2 compute node to the user's local machine
-# Make sure to modify <stampede2> with the lowest-level domain name 
-# of the applicable TACC machine (<frontera>, <lonestar>, etc.)
+# Make sure to replace <stampede2> with the lowest-level domain name 
+# of the applicable TACC machine (<frontera>, <lonestar>, etc.) if applicable
 
 jupyter_tacc () {
     ssh -L localhost:$1:$2:$1 stampede2.tacc.utexas.edu;             
