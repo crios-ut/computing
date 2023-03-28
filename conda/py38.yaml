@@ -36,6 +36,7 @@ dependencies:
     - jupyterlab
     - ipython
     - ipykernel
+    - nodejs
 # etc
     - gsw
     - vaex
