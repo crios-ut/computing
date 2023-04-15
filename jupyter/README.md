@@ -118,7 +118,7 @@
         ```
         TACC: idev -p normal -N 2 -n 8 -m 150
         ```
-
+        
     2. Activate your conda environment on the compute node. Use this command to activate the environment `py38` (see Prerequisites) and add it to your jupyter kernel.
         
         ```
@@ -181,8 +181,11 @@
 
         Ex: If the port number is 8874 and the compute node hostname is 'c407-408.stampede2.tacc.utexas.edu', then the associated command would be 'jupyter_tacc 8874 c407-408.stampede2.tacc.utexas.edu'
 
-
     7. Open up a web browser and navigate to https://localhost:PPPP or
     copy and paste one of the URL's output on the remote machine terminal from the [open_notebook_on_sverdrup.sh](open_notebook_on_sverdrup.sh) or [open_notebook_on_tacc_machine.sh](open_notebook_on_tacc_machine.sh) command into a web browser on your local machine.
+
+    8. Open up a web browser and navigate to https://localhost:PPPP
+      
+         NOTE: If your browser experiences a timeout or does not load the Jupyter connection, you may optionally navigate to http://localhost:PPPP
     
-    8. If using Google Chrome, you may be told that connection to localhost is insecure. To continue, click anywhere on the Chrome window and type "thisisunsafe", and you will arrive at a jupyter notebook login screen. Enter your Sverdrup password to proceed.
+    9. If using Google Chrome, you may be told that connection to localhost is insecure. To continue, click anywhere on the Chrome window and type "thisisunsafe", and you will arrive at a jupyter notebook login screen. Enter your Sverdrup password to proceed.
