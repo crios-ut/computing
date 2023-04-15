@@ -36,6 +36,7 @@ dependencies:
     - jupyterlab
     - ipython
     - ipykernel
+    - nodejs
 # etc
     - gsw
     - vaex
@@ -43,6 +44,7 @@ dependencies:
     - h5py
     - hdf4
     - hdf5
+    - pympler
 # docs
     - sphinx
     - sphinx_rtd_theme

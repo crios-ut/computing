@@ -1,6 +1,6 @@
 # Jupyter
 
-## Guide to start using Jupyter Notebooks on Sverdrup
+## Guide to start using Jupyter Notebooks on Sverdrup and TACC Machines
 
 ### Prerequisites
 1. **Python installation on Sverdrup (using miniconda)**
@@ -105,35 +105,87 @@
 
     You can then start the notebook as follows  -
 
-    1. Connect to sverdrup and open up interactive session on compute node. A typical command to do that is:
-    ```
-    srun -t 1440 -N 1 --ntasks 4 --cpus-per-task=7 --pty bash -i
-    ```
+    1. Connect to desired machine and open up interactive session on compute node. Typical commands to do this are:
 
-    2. Activate your conda environment on the compute node. Use this command to activate the environment `py38` (see [Prerequisites](#prerequisites)) and add it to your jupyter kernel.
-    ```
-    conda activate py38
-    python -m ipykernel install --user --name=py38
-    ```
+      - sverdrup:
 
-    3. Run [open_notebook_on_sverdrup.sh](open_notebook_on_sverdrup.sh)
+        ```
+        srun -t 1440 -N 1 --ntasks 4 --cpus-per-task=7 --pty bash -i
+        ```
 
-       You will get IP XX.X.X.XX, and port number PPPP
+      - TACC: 
 
-    4. Source [connect_to_sverdrup_notebook.sh](connect_to_sverdrup_notebook.sh) in the `.bashrc` on your local machine (i.e. your laptop) so that you can use the `jupytersv` command.
+        ```
+        TACC: idev -p normal -N 2 -n 8 -m 150
+        ```
+        
+    2. Activate your conda environment on the compute node. Use this command to activate the environment `py38` (see Prerequisites) and add it to your jupyter kernel.
+        
+        ```
+        conda activate py38
+        python -m ipykernel install --user --name=py38
+        ```
 
-       ```
-       source connect_to_sverdrup_notebook.sh
-       ```
+    3. Initialize jupyter notebook server on remote machine
+    
+      - sverdrup: Run [open_notebook_on_sverdrup.sh](open_notebook_on_sverdrup.sh)
 
-    5. On your local machine (i.e. your laptop), run the command -
+        - You will get IP XX.X.X.XX, and port number PPPP
 
-       ```
-       jupytersv PPPP XX.X.X.XX
-       ```
+      - TACC: Run [open_notebook_on_tacc_machine.sh](open_notebook_on_tacc_machine.sh)
 
-    6. Open up a web browser and navigate to https://localhost:PPPP
+        - This returns a port number saying "your port number is is: PPPP"
+          (Disregard the message saying that the port is listening on all IP addresses)
+
+    4. For TACC Machines Only: If the jupyter notebook server has been initialized on a TACC machine, navigate to the function in the [connect_to_tacc_machine_notebook.sh](connect_to_tacc_machine_notebook.sh) file and modify it according to the appropriate TACC machine using the following convention: 
+      
+        ```
+        jupyter_tacc () {
+              ssh -L localhost:$1:$2:$1 <TACC_machine>.tacc.utexas.edu;             
+        }
+        ```
+
+        (where  "TACC_machine" is the name of the TACC machine the compute node is running on (i.e. "stampede2", "frontera", etc))
+
+        NOTE: The [connect_to_tacc_machine_notebook.sh](connect_to_tacc_machine_notebook.sh) file's 'jupyter_tacc()' function is initialized to stampede2 compute nodes and does not
+        need to be modified if the user initializes a jupyter notebook serveron a stampede2 compute node.
+          
+    5. Source [connect_to_sverdrup_notebook.sh](connect_to_sverdrup_notebook.sh) or [connect_to_tacc_machine_notebook.sh](connect_to_tacc_machine_notebook.sh) in the `.bashrc` on your local machine (i.e. your laptop) so that you can use the `jupytersv` command.
+
+      - sverdrup:
+
+        ```
+        source connect_to_sverdrup_notebook.sh
+        ```
+
+      - TACC: 
+
+        ``` 
+        source connect_to_tacc_machine_notebook.sh
+        ```
+
+    6. On your local machine (i.e. your laptop), call the [connect_to_sverdrup_notebook.sh](connect_to_sverdrup_notebook.sh) or [connect_to_tacc_machine_notebook.sh](connect_to_tacc_machine_notebook.sh) functions from the command line to establish a connection between 
+    local server and remote jupyter notebook server.
+
+      - sverdrup: 
+
+        ```
+        jupytersv PPPP XX.X.X.XX
+        ```
+
+      - TACC: 
+
+        ```
+        jupyter_tacc PPPP compute_node_hostname
+        ```
+
+        Ex: If the port number is 8874 and the compute node hostname is 'c407-408.stampede2.tacc.utexas.edu', then the associated command would be 'jupyter_tacc 8874 c407-408.stampede2.tacc.utexas.edu'
+
+    7. Open up a web browser and navigate to https://localhost:PPPP or
+    copy and paste one of the URL's output on the remote machine terminal from the [open_notebook_on_sverdrup.sh](open_notebook_on_sverdrup.sh) or [open_notebook_on_tacc_machine.sh](open_notebook_on_tacc_machine.sh) command into a web browser on your local machine.
+
+    8. Open up a web browser and navigate to https://localhost:PPPP
       
          NOTE: If your browser experiences a timeout or does not load the Jupyter connection, you may optionally navigate to http://localhost:PPPP
     
-    7. If using Google Chrome, you may be told that connection to localhost is insecure. To continue, click anywhere on the Chrome window and type "thisisunsafe", and you will arrive at a jupyter notebook login screen. Enter your Sverdrup password to proceed.
+    9. If using Google Chrome, you may be told that connection to localhost is insecure. To continue, click anywhere on the Chrome window and type "thisisunsafe", and you will arrive at a jupyter notebook login screen. Enter your Sverdrup password to proceed.
