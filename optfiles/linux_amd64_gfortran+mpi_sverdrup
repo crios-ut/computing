@@ -1,0 +1,77 @@
+#!/bin/bash
+#
+# For running on the CSEM cluster Sverdrup
+#  Compiler optimizations for Intel E5-2695 v3 (Haswell) Processors
+#  Note: only difference from lonestar opt file is the netcdf module load
+#
+# Note: be sure to load the following modules
+#
+#  module load gnu7/7.2.0
+#  module load openmpi/1.10.7
+#  module load phdf5/1.10.1
+#  module load netcdf/4.5.0
+#  module load netcdf-fortran/4.4.4
+#
+#-------
+if test "x$MPI" = xtrue ; then
+  echo "WITH MPI"
+  DEFINES='-DALLOW_USE_MPI -DALWAYS_USE_MPI'
+  CC=${CC:=mpicc}
+  FC=${FC:=mpif77}
+  F90C=mpifort
+else
+  echo "NO MPI"
+  DEFINES=''
+  CC=gcc
+  FC=gfortran
+  F90C=gfortran
+fi
+
+LINK="$F90C"
+
+# NML_TERMINATOR: changes namelist EOF character from & to /
+DEFINES="$DEFINES -DWORDLENGTH=4 -DNML_TERMINATOR"
+EXTENDED_SRC_FLAG='-ffixed-line-length-132 -ffree-line-length-0'
+F90FIXEDFORMAT='-fixed -Tf'
+GET_FC_VERSION="--version"
+CPP='cpp -traditional -P'
+OMPFLAG='-fopenmp'
+
+NOOPTFLAGS='-O1 -fp-model precise'
+NOOPTFILES=''
+
+CFLAGS='-O0 -fPIC'
+FFLAGS="$FFLAGS -fconvert=big-endian -fimplicit-none"
+# for big objects:
+FFLAGS="$FFLAGS $EXTENDED_SRC_FLAG -fPIC"
+
+#- for setting specific options, check compiler version:
+fcVers=`$FC -dumpversion | head -n 1 | sed 's/^[^0-9]* //;s/\..*$//'`
+if ! [[ $fcVers =~ ^[0-9]+$ ]] ; then
+  echo "    un-recognized Compiler-version '$fcVers' ; ignored (-> set to 0)" ; fcVers=0 ;
+else echo "    get Compiler-version: '$fcVers'" ; fi
+
+if [ $fcVers -ge 10 ] ; then
+  FFLAGS="$FFLAGS -fallow-argument-mismatch"
+fi
+
+if test "x$IEEE" = x ; then
+    FFLAGS="$FFLAGS -Wunused -Wuninitialized"
+    FOPTIM='-O3 -ftree-vectorize -funroll-loops'
+    NOOPTFLAGS='-O2 -funroll-loops'
+else
+    FFLAGS="$FFLAGS -Wall"
+    if test "x$DEVEL" = x ; then  #- no optimisation + IEEE :
+	  FOPTIM='-O0'
+    else                          #- development/check options:
+	  FOPTIM='-O0 -g -fbounds-check'
+	  FOPTIM="$FOPTIM -ffpe-trap=invalid,zero,overflow -finit-real=inf"
+    fi
+fi
+
+F90FLAGS=$FFLAGS
+F90OPTIM=$FOPTIM
+
+INCLUDEDIRS="${MPI_DIR}/include ${NETCDF_FORTRAN_INC} ${NETCDF_INC}"
+INCLUDES="-I${MPI_DIR}/include -I${NETCDF_FORTRAN_INC} -I${NETCDF_INC}"
+LIBS="-I${MPI_DIR}/lib -Wl,-rpath -Wl,${MPI_DIR}/lib -Wl,--enable-new-dtags -L${MPI_DIR}/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi -L${NETCDF_FORTRAN_LIB} -L${NETCDF_LIB} -lnetcdf -lnetcdff"
