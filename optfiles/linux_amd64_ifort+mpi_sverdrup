@@ -1,66 +1,104 @@
 #!/bin/bash
 #
-# For running on the ICES cluster Sverdrup
+# For running on the CSEM cluster Sverdrup
 #  Compiler optimizations for Intel E5-2695 v3 (Haswell) Processors
 #  Note: only difference from lonestar opt file is the netcdf module load
 #
 # Note: be sure to load the following modules
 #
-#  module load c7
-#  module load intel/17.0
-#  module load openmpi
+#  module load intel/2023.1.0
+#  module load impi/2021.9.0
+#  module load netcdf/4.9.0
+#  module load netcdf-fortran/4.6.0
+#  module load phdf5/1.14.1
 #
 #-------
+if test "x$MPI" = xtrue ; then
+  echo "WITH MPI"
+  CC=${CC:=mpicc}
+  FC=${FC:=mpif77}
+  F90C=${F90C:=mpif90}
+  LINK="$F90C -shared-intel -no-ipo"
+else
+  CC=icc
+  FC=ifort
+  F90C=ifort
+  LINK="$F90C -shared-intel"
+fi
 
-CC=icc
-FC=ifort
-F90C=mpifort
-LINK="$F90C -no-ipo"
-
-DEFINES='-DALLOW_USE_MPI -DALWAYS_USE_MPI -DWORDLENGTH=4'
-CPP='cpp -traditional -P'
+DEFINES='-DWORDLENGTH=4 -DNML_TERMINATOR'
 F90FIXEDFORMAT='-fixed -Tf'
-EXTENDED_SRC_FLAG='-132'
+EXTENDED_SRC_FLAG='-132' # after character position 132 is invisible to *.F
 GET_FC_VERSION="--version"
 OMPFLAG='-openmp'
 
-#NOOPTFLAGS='-O0 -g'
-#NOOPTFILES='-01 -fp-model precise'
+# NOOPTFLAGS='-O0 -g'
 NOOPTFILES='-01 -fp-model precise -g -xCORE-AVX2'
+NOOPTFILES=''
 
-FFLAGS="$FFLAGS -W0 -WB -convert big_endian -assume byterecl"
-FFLAGS="$FFLAGS -fPIC"
-FFLAGS="$FFLAGS -mcmodel=large -shared-intel"
-FFLAGS="$FFLAGS -132" # extend to 132 columns
+#- for setting specific options, check compiler version:
+fcVers=`$FC $GET_FC_VERSION | head -n 1 | awk '{print $NF}'`
+if ! [[ $fcVers =~ ^[0-9]+$ ]] ; then
+  echo "    un-recognized Compiler-release '$fcVers' ; ignored (-> set to 0)" ; fcVers=0 ;
+else echo "    get Compiler-release: '$fcVers'" ; fi
+if [ $fcVers -ge 20160301 ] ; then
+    OMPFLAG='-qopenmp'
+fi
+
+if test "x$GENERIC" != x ; then
+    PROCF=-axSSE4.2,SSE4.1,SSSE3,SSE3,SSE2
+else
+    PROCF=-xHost
+    # might be a faster compile to set PROCF=-xCORE-AVX2
+fi
+
+# 2024 issue: genmake2 doesn't let -qopt-inlining flag pass FCHECKs
+# CFLAGS="-O0 -qopt-inlining -m64 $PROCF"
+CFLAGS="-O0 -ip -m64 $PROCF"
+FFLAGS="$FFLAGS -m64 -convert big_endian -assume byterecl"
+#- for big setups, compile & link with "-fPIC" or set memory-model to "medium":
+CFLAGS="$CFLAGS -fPIC"
+FFLAGS="$FFLAGS -fPIC -no-wrap-margin"
+#-  with FC 19, need to use this without -fPIC (which cancels -mcmodel option):
+#CFLAGS="$CFLAGS -mcmodel=medium"
+#FFLAGS="$FFLAGS -mcmodel=medium"
 #- might want to use '-r8' for fizhi pkg:
 #FFLAGS="$FFLAGS -r8"
 
 if test "x$IEEE" = x ; then     #- with optimisation:
-    FOPTIM='-O2 -align -traceback -xCORE-AVX2 -ip -ftz -fp-model precise'
-    #NOOPTFILES='seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F fizhi_clockstuff.F'
+#    FOPTIM="-O2 -align -ip -fp-model source $PROCF"
+    FOPTIM="-O2 -align -fp-model source $PROCF"
     NOOPTFILES='seaice_init_varia.F'
 else
-  if test "x$DEVEL" = x ; then  #- no optimisation + IEEE :
-    # "-mp" is for ieee "maintain precision"
-    FOPTIM='-O0 -noalign -traceback -xCORE-AVX2 -ip -mp'
-  else                          #- development/check options:
-    FFLAGS="$FFLAGS -warn all -warn nounused"
-    FOPTIM="-fpe0 -fpstkchk -fpmodel except -check all -ftrapuv"
-    FOPTIM="-O0 -noalign -g -traceback"
+  if test "x$DEVEL" = x ; then  #- no optimisation + IEEE : -ieee
+    FOPTIM="-O0 -fp-model source -noalign $PROCF"
+  else                          #- development/check options: -devel or -ieee -devel
+    FFLAGS="$FFLAGS -debug all -debug-parameters all -fp-model strict"
+    FOPTIM="-O0 -noalign -g -traceback $PROCF"
+    NOOPTFLAGS=$FOPTIM
+    NOOPTFILES='adread_adwrite.F'
+    FOPTIM="$FOPTIM -warn all -warn nounused"
+    FOPTIM="$FOPTIM -fpe0 -ftz -fp-stack-check -fpmodel except -check all -ftrapuv"
   fi
 fi
 
+FFLAGS="$EXTENDED_SRC_FLAG $FFLAGS"
+
 F90FLAGS=$FFLAGS
 F90OPTIM=$FOPTIM
-CFLAGS='-O0 -ip -fPIC'
-# INCLUDEDIRS=$(shell $F90C --showme:compile)
-#LIBS=$(shell $F90C --showme:link)
 
-INCLUDEDIRS="${MPI_DIR}/include ${NETCDF_FORTRAN_INC} ${NETCDF_INC}"
-#INCLUDES="-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -I${NETCDF_INC}"
-INCLUDES="-I${MPI_DIR}/include -I${NETCDF_FORTRAN_INC} -I${NETCDF_INC}"
-#LIBS="-I/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,-rpath -Wl,/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -Wl,--enable-new-dtags -L/share/libraries/openmpi/openmpi-2.0.1/c7/intel-17.0/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi -L${NETCDF_DIR} -lnetcdf"
-LIBS="-I${MPI_DIR}/lib -Wl,-rpath -Wl,${MPI_DIR}/lib -Wl,--enable-new-dtags -L${MPI_DIR}/lib -lmpi_usempif08 -lmpi_usempi_ignore_tkr -lmpi_mpifh -lmpi -L${NETCDF_FORTRAN_LIB} -L${NETCDF_LIB} -lnetcdf -lnetcdff"
+INCLUDEDIRS=''
+INCLUDES=''
+LIBS=''
 
-#- used for parallel (MPI) DIVA
-#MPIINCLUDEDIR="${MPI_DIR}"
+if [ -n "$MPI_INC_DIR" -a "x$MPI" = xtrue ] ; then
+    INCLUDEDIRS="$INCLUDEDIRS $MPI_DIR/include"
+    INCLUDES="$INCLUDES -I$MPI_DIR/include"
+    #- used for parallel (MPI) DIVA
+    MPIINCLUDEDIR="$MPI_DIR/include"
+    #LIBS="$LIBS -I$MPI_DIR/lib -Wl,--enable-new-dtags -L$MPI_DIR/lib -lmpi -lmpi_mpifh"
+   #MPI_HEADER_FILES='mpif.h mpiof.h'
+fi
+INCLUDEDIRS="$INCLUDEDIRS $NETCDF_FORTRAN_INC $NETCDF_INC"
+INCLUDES="$INCLUDES -I$NETCDF_FORTRAN_INC -I$NETCDF_INC"
+LIBS="$LIBS -L$NETCDF_FORTRAN_LIB -L$NETCDF_LIB -lnetcdf -lnetcdff"
