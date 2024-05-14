@@ -12,9 +12,14 @@
 #  module load netcdf-fortran/4.6.0
 #  module load phdf5/1.14.1
 #
+# Equivalently, run
+# module load intel impi netcdf netcdf-fortran phdf5
+#
 #-------
 if test "x$MPI" = xtrue ; then
   echo "WITH MPI"
+  # No longer used in MITgcm, uncomment if running on an old checkpoint
+  #DEFINES="-DALLOW_USE_MPI -DALWAYS_USE_MPI"
   CC=${CC:=mpicc}
   FC=${FC:=mpif77}
   F90C=${F90C:=mpif90}
@@ -26,7 +31,7 @@ else
   LINK="$F90C -shared-intel"
 fi
 
-DEFINES='-DWORDLENGTH=4 -DNML_TERMINATOR'
+DEFINES="$DEFINES -DWORDLENGTH=4 -DNML_TERMINATOR"
 F90FIXEDFORMAT='-fixed -Tf'
 EXTENDED_SRC_FLAG='-132' # after character position 132 is invisible to *.F
 GET_FC_VERSION="--version"
@@ -45,44 +50,39 @@ if [ $fcVers -ge 20160301 ] ; then
     OMPFLAG='-qopenmp'
 fi
 
-if test "x$GENERIC" != x ; then
-    PROCF=-axSSE4.2,SSE4.1,SSSE3,SSE3,SSE2
-else
-    PROCF=-xHost
-    # might be a faster compile to set PROCF=-xCORE-AVX2
-fi
+# Guarantee to use AVX2 instruction set
+PROCF=-xCORE-AVX2
 
-# 2024 issue: genmake2 doesn't let -qopt-inlining flag pass FCHECKs
-# CFLAGS="-O0 -qopt-inlining -m64 $PROCF"
-CFLAGS="-O0 -ip -m64 $PROCF"
+CFLAGS="-O0 -m64 $PROCF"
 FFLAGS="$FFLAGS -m64 -convert big_endian -assume byterecl"
 #- for big setups, compile & link with "-fPIC" or set memory-model to "medium":
 CFLAGS="$CFLAGS -fPIC"
 FFLAGS="$FFLAGS -fPIC -no-wrap-margin"
 #-  with FC 19, need to use this without -fPIC (which cancels -mcmodel option):
-#CFLAGS="$CFLAGS -mcmodel=medium"
-#FFLAGS="$FFLAGS -mcmodel=medium"
+CFLAGS="$CFLAGS -mcmodel=medium"
+FFLAGS="$FFLAGS -mcmodel=large"
+# Enforce 132 columns of reading on source code
+FFLAGS="$EXTENDED_SRC_FLAG -W0 -WB $FFLAGS"
+
 #- might want to use '-r8' for fizhi pkg:
 #FFLAGS="$FFLAGS -r8"
 
-if test "x$IEEE" = x ; then     #- with optimisation:
-#    FOPTIM="-O2 -align -ip -fp-model source $PROCF"
-    FOPTIM="-O2 -align -fp-model source $PROCF"
-    NOOPTFILES='seaice_init_varia.F'
+if test "x$IEEE" = x ; then     #- with optimisation: no flags enabled
+    FOPTIM="-O2 -ip -fp-model precise -align $PROCF -traceback"
+    NOOPTFILES="seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F"
+    NOOPTFILES="$NOOPTFILES fizhi_clockstuff.F ini_parms.F obcs_init_fixed.F"
+    NOOPTFILES="$NOOPTFILES seaice_init_varia.F"
 else
   if test "x$DEVEL" = x ; then  #- no optimisation + IEEE : -ieee
-    FOPTIM="-O0 -fp-model source -noalign $PROCF"
-  else                          #- development/check options: -devel or -ieee -devel
-    FFLAGS="$FFLAGS -debug all -debug-parameters all -fp-model strict"
-    FOPTIM="-O0 -noalign -g -traceback $PROCF"
+    FOPTIM="-O0 -fp-model source -traceback -noalign $PROCF"
+  else                          #- devel/check options: -devel or -ieee -devel
+    FOPTIM="-O0 -noalign -g -traceback -warn all -warn nounused -debug all"
     NOOPTFLAGS=$FOPTIM
     NOOPTFILES='adread_adwrite.F'
-    FOPTIM="$FOPTIM -warn all -warn nounused"
-    FOPTIM="$FOPTIM -fpe0 -ftz -fp-stack-check -fpmodel except -check all -ftrapuv"
+    FOPTIM="$FOPTIM -fpe0 -ftz -fp-stack-check -fp-model strict"
+    FOPTIM="$FOPTIM -fp-model except -check all -ftrapuv"
   fi
 fi
-
-FFLAGS="$EXTENDED_SRC_FLAG $FFLAGS"
 
 F90FLAGS=$FFLAGS
 F90OPTIM=$FOPTIM
@@ -91,14 +91,16 @@ INCLUDEDIRS=''
 INCLUDES=''
 LIBS=''
 
-if [ -n "$MPI_INC_DIR" -a "x$MPI" = xtrue ] ; then
+if test "x$MPI" = x ; then
+    #- mpiexec and prun may determine these flags for you
     INCLUDEDIRS="$INCLUDEDIRS $MPI_DIR/include"
     INCLUDES="$INCLUDES -I$MPI_DIR/include"
+    LIBS="$LIBS -I$MPI_DIR/lib -Wl,--no-relax -L$MPI_DIR/lib -lmpifort"
     #- used for parallel (MPI) DIVA
     MPIINCLUDEDIR="$MPI_DIR/include"
-    #LIBS="$LIBS -I$MPI_DIR/lib -Wl,--enable-new-dtags -L$MPI_DIR/lib -lmpi -lmpi_mpifh"
-   #MPI_HEADER_FILES='mpif.h mpiof.h'
+    #- GNU linker flag: no optimizations that relax the code
+    LIBS="$LIBS -Wl,--no-relax"
 fi
 INCLUDEDIRS="$INCLUDEDIRS $NETCDF_FORTRAN_INC $NETCDF_INC"
 INCLUDES="$INCLUDES -I$NETCDF_FORTRAN_INC -I$NETCDF_INC"
-LIBS="$LIBS -L$NETCDF_FORTRAN_LIB -L$NETCDF_LIB -lnetcdf -lnetcdff"
+LIBS="$LIBS -L$NETCDF_FORTRAN_LIB -L$NETCDF_LIB -lnetcdf -lnetcdff" 
