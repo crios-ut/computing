@@ -1,0 +1,61 @@
+#!/bin/bash
+#
+# For running on TACC's Stampede 3
+#
+# UPDATE: updated to O3 optimization available in Stampede3. Most useful for 
+# Skylake nodes. 
+# UPDATE: The optfile will *not* build a multi-architecture binary. There is a
+# small performance penalty, and more importantly, the Intel compiler
+# can crash when trying to compile the generated adjoint code with
+# these options (reproducible, but the crash only occurs when trying to compile
+# for 96 processes and not when compiling a 192-process binary)
+#
+# Note that for performance you may need to use many more processes on this
+# machine; the individual cores are actually quite slow and rely on memory
+# bandwidth and massive parallelism for throughput
+#
+# Make sure the following modules are loaded:
+#   ml intel impi netcdf parallel-netcdf phdf5
+# After loading these the first time, you can save the module bundle: 
+#   module save MITGCM
+# Then, you can recall these modules using:
+#   module restore MITGCM
+
+CC=icx
+FC=ifort
+F90C=ifort
+LINK="$F90C -no-ipo"
+
+DEFINES='-DALLOW_USE_MPI -DALWAYS_USE_MPI -DWORDLENGTH=4'
+CPP='cpp -traditional -P'
+F90FIXEDFORMAT='-fixed -Tf'
+EXTENDED_SRC_FLAG='-132'
+GET_FC_VERSION="--version"
+OMPFLAG='-openmp'
+
+NOOPTFLAGS='-O1 -fp-model precise'
+
+FFLAGS="$FFLAGS -W0 -WB -convert big_endian -assume byterecl"
+FFLAGS="$FFLAGS -fPIC -mcmodel=large"
+
+if test "x$IEEE" = x ; then
+    FOPTIM="-align -traceback -xCORE-AVX512 -O3 -ip -ftz -fp-model precise"
+    NOOPTFILES='obcs_set_connect.F obcs_init_fixed.F'
+else
+    if test "x$DEVEL" = x ; then
+        FOPTIM='-O0 -noalign -traceback -xCORE-AVX512 -ip -parallel'
+    else
+        FFLAGS="$FFLAGS -warn all -warn nounused"
+        FOPTIM="-fpe0 -fpstkchk -fpmodel except -check all -ftrapuv"
+        FOPTIM="-O0 -noalign -g -traceback"
+    fi
+fi
+
+F90FLAGS=$FFLAGS
+F90OPTIM=$FOPTIM
+CFLAGS="-O3 -ip -fPIC"
+
+INCLUDEDIRS="${TACC_IMPI_INC} ${TACC_NETCDF_INC}"
+INCLUDES="-I${TACC_IMPI_INC} -I${TACC_NETCDF_INC}"
+LIBS="-L${TACC_IMPI_LIB} -lmpi -lmpifort -L${TACC_NETCDF_LIB} -lnetcdf -lnetcdff"
+MPIINCLUDEDIR="${TACC_IMPI_INC}"
