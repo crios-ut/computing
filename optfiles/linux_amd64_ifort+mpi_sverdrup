@@ -8,9 +8,9 @@
 #
 #  module load intel/2023.1.0
 #  module load impi/2021.9.0
-#  module load netcdf/4.9.0
-#  module load netcdf-fortran/4.6.0
-#  module load phdf5/1.14.1
+#  module load netcdf/4.9.2
+#  module load netcdf-fortran/4.6.1
+#  module load phdf5/1.14.0
 #
 # Equivalently, run
 # module load intel impi netcdf netcdf-fortran phdf5
@@ -68,7 +68,11 @@ FFLAGS="$EXTENDED_SRC_FLAG -W0 -WB $FFLAGS"
 #FFLAGS="$FFLAGS -r8"
 
 if test "x$IEEE" = x ; then     #- with optimisation: no flags enabled
-    FOPTIM="-O2 -ip -fp-model precise -align $PROCF -traceback"
+    # ip only in serial codes
+    if test "x$MPI" != xtrue ; then
+        FOPTIM="-ip"
+    fi
+    FOPTIM="$FOPTIM -O2 -fp-model precise -align $PROCF -traceback"
     NOOPTFILES="seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F"
     NOOPTFILES="$NOOPTFILES fizhi_clockstuff.F ini_parms.F obcs_init_fixed.F"
     NOOPTFILES="$NOOPTFILES seaice_init_varia.F"
@@ -76,7 +80,7 @@ else
   if test "x$DEVEL" = x ; then  #- no optimisation + IEEE : -ieee
     FOPTIM="-O0 -fp-model source -traceback -noalign $PROCF"
   else                          #- devel/check options: -devel or -ieee -devel
-    FOPTIM="-O0 -noalign -g -traceback -warn all -warn nounused -debug all"
+    FOPTIM="-O0 -noalign -g -traceback -warn nounused -debug all"
     NOOPTFLAGS=$FOPTIM
     NOOPTFILES='adread_adwrite.F'
     FOPTIM="$FOPTIM -fpe0 -ftz -fp-stack-check -fp-model strict"
@@ -91,7 +95,7 @@ INCLUDEDIRS=''
 INCLUDES=''
 LIBS=''
 
-if test "x$MPI" = x ; then
+if test "x$MPI" != x ; then
     #- mpiexec and prun may determine these flags for you
     INCLUDEDIRS="$INCLUDEDIRS $MPI_DIR/include"
     INCLUDES="$INCLUDES -I$MPI_DIR/include"
