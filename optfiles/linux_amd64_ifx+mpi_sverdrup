@@ -1,0 +1,111 @@
+#!/bin/bash
+#
+# For running on the CSEM cluster Sverdrup
+#  Compiler optimizations for Intel E5-2695 v3 (Haswell) Processors
+#  Note: only difference from lonestar opt file is the netcdf module load
+#
+# Note: be sure to load the following modules
+#
+#  module load intel/2023.1.0
+#  module load impi/2021.9.0
+#  module load netcdf/4.9.2
+#  module load netcdf-fortran/4.6.1
+#  module load phdf5/1.14.0
+#
+# Equivalently, run
+# module load intel impi netcdf netcdf-fortran phdf5
+#
+#-------
+if test "x$MPI" = xtrue ; then
+  echo "WITH MPI"
+  # No longer used in MITgcm, uncomment if running on an old checkpoint
+  #DEFINES="-DALLOW_USE_MPI -DALWAYS_USE_MPI"
+  CC=${CC:=mpicc}
+  FC=${FC:=mpif77}
+  F90C=${F90C:=mpif90}
+  LINK="$F90C -shared-intel -no-ipo"
+else
+  # if Intel 2023 or earlier use icc and ifort 
+  #CC=icc
+  #FC=ifort
+  #F90C=ifort
+  CC=icx
+  FC=ifx
+  F90C=ifx
+  LINK="$F90C -shared-intel"
+fi
+
+DEFINES="$DEFINES -DWORDLENGTH=4 -DNML_TERMINATOR"
+F90FIXEDFORMAT='-fixed -Tf'
+EXTENDED_SRC_FLAG='-132' # after character position 132 is invisible to *.F
+GET_FC_VERSION="--version"
+OMPFLAG='-openmp'
+FOPTIM=
+
+# NOOPTFLAGS='-O0 -g'
+NOOPTFILES='-01 -fp-model precise -g -xCORE-AVX2'
+NOOPTFILES=''
+
+#- for setting specific options, check compiler version:
+fcVers=`$FC $GET_FC_VERSION | head -n 1 | awk '{print $NF}'`
+if ! [[ $fcVers =~ ^[0-9]+$ ]] ; then
+  echo "    un-recognized Compiler-release '$fcVers' ; ignored (-> set to 0)" ; fcVers=0 ;
+else echo "    get Compiler-release: '$fcVers'" ; fi
+if [ $fcVers -ge 20160301 ] ; then
+    OMPFLAG='-qopenmp'
+fi
+
+# Guarantee to use AVX2 instruction set
+PROCF=-xCORE-AVX2
+
+CFLAGS="-O0 -m64 $PROCF"
+FFLAGS="$FFLAGS -m64 -convert big_endian -assume byterecl"
+#- for big setups, compile & link with "-fPIC" or set memory-model to "medium":
+CFLAGS="$CFLAGS -fPIC"
+FFLAGS="$FFLAGS -fPIC -no-wrap-margin"
+#-  with FC 19, need to use this without -fPIC (which cancels -mcmodel option):
+CFLAGS="$CFLAGS -mcmodel=medium"
+FFLAGS="$FFLAGS -mcmodel=large"
+# Enforce 132 columns of reading on source code
+FFLAGS="$EXTENDED_SRC_FLAG -W0 -WB $FFLAGS"
+
+#- might want to use '-r8' for fizhi pkg:
+#FFLAGS="$FFLAGS -r8"
+
+if test "x$IEEE" = x ; then     #- with optimisation: no flags enabled
+    FOPTIM="$FOPTIM -O2 -fp-model precise -align $PROCF -traceback"
+    NOOPTFILES="seaice_growth.F calc_oce_mxlayer.F fizhi_lsm.F"
+    NOOPTFILES="$NOOPTFILES fizhi_clockstuff.F ini_parms.F obcs_init_fixed.F"
+    NOOPTFILES="$NOOPTFILES seaice_init_varia.F"
+else
+  if test "x$DEVEL" = x ; then  #- no optimisation + IEEE : -ieee
+    FOPTIM="-O0 -fp-model source -traceback -noalign $PROCF"
+  else                          #- devel/check options: -devel or -ieee -devel
+    FOPTIM="-O0 -noalign -g -traceback -warn nounused -debug all"
+    NOOPTFLAGS=$FOPTIM
+    NOOPTFILES='adread_adwrite.F'
+    FOPTIM="$FOPTIM -fpe0 -ftz -fstack-security-check -fp-model strict"
+    FOPTIM="$FOPTIM -fp-model except -check all -ftrapuv"
+  fi
+fi
+
+F90FLAGS=$FFLAGS
+F90OPTIM=$FOPTIM
+
+INCLUDEDIRS=''
+INCLUDES=''
+LIBS=''
+
+if test "x$MPI" != x ; then
+    #- mpiexec and prun may determine these flags for you
+    INCLUDEDIRS="$INCLUDEDIRS $MPI_DIR/include"
+    INCLUDES="$INCLUDES -I$MPI_DIR/include"
+    LIBS="$LIBS -I$MPI_DIR/lib -Wl,--no-relax -L$MPI_DIR/lib -lmpifort"
+    #- used for parallel (MPI) DIVA
+    MPIINCLUDEDIR="$MPI_DIR/include"
+    #- GNU linker flag: no optimizations that relax the code
+    LIBS="$LIBS -Wl,--no-relax"
+fi
+INCLUDEDIRS="$INCLUDEDIRS $NETCDF_FORTRAN_INC $NETCDF_INC"
+INCLUDES="$INCLUDES -I$NETCDF_FORTRAN_INC -I$NETCDF_INC"
+LIBS="$LIBS -L$NETCDF_FORTRAN_LIB -L$NETCDF_LIB -lnetcdf -lnetcdff" 
